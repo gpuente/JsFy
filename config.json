@@ -1,4 +1,7 @@
 {
+	"app" : {
+		"port" : 3977
+	},
 	"dbconnection":{
 		"conecctionString": "mongodb://localhost:27017/jsfy"
 	}

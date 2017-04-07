@@ -1,4 +1,6 @@
 {
 	"db_connection_succsess" : "DB connected successfully",
-	"db_connection_err" : "DB connection error"
+	"db_connection_err" : "DB connection error",
+	"server_running" : "Server running at port: ",
+	"script_success" : "Script running successfully"
 }
