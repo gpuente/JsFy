@@ -68,6 +68,32 @@ async function updateUser(req, res){
 	}
 }
 
+async function uploadImage(req, res){
+	try{
+		var userId = req.params.id;
+		var fileName = null;
+		if(!req.files.image) return res.status(200).send({message: global.st.upload_user_image_not_sended});
+		var fileSplit = req.files.image.path.split(global.config.dir.file_system_separator);
+		var fileFullName = fileSplit[fileSplit.length - 1];
+		var fileName = fileFullName.split('\.')[0];
+		var fileExt = fileFullName.split('\.')[1];
+		var isValidExt = false;
+		
+		for (var i = 0 ; i < global.config.dir.file_image_ext_supported.length; i++) {
+			if(global.config.dir.file_image_ext_supported[i] == fileExt) isValidExt = true;
+		}
+
+		if(!isValidExt) return res.status(200).send({message: global.st.upload_user_image_error_ext});
+
+		var promise = User.findByIdAndUpdate(userId, {image: fileFullName});
+		var userUpdated = await promise;
+		if(!userUpdated) return res.status(404).send({message: global.st.user_image_not_updated});
+		res.status(200).send({user: userUpdated});
+	}catch(err){
+		res.status(500).send({message: global.st.upload_user_image_error});
+	}
+}
+
 
 function _isValidUser(params){
 	if(params.name != null && params.surname != null && params.email != null && params.password != null){
@@ -81,5 +107,6 @@ module.exports = {
 	pruebas,
 	saveUser,
 	loginUser,
-	updateUser
+	updateUser,
+	uploadImage
 };

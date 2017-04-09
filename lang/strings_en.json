@@ -10,5 +10,9 @@
 	"error_login_token_expired": "Access denied, token expired",
 	"error_login_invalid_token": "Access denied, invalid token",
 	"error_update_user": "An error ocurred while update the user",
-	"user_not_updated": "The user can't be updated"
+	"user_not_updated": "The user can't be updated",
+	"upload_user_image_not_sended": "Error to upload user image. Image not sended",
+	"upload_user_image_error_ext": "Image extension not valid",
+	"user_image_not_updated": "The user image can't be updated",
+	"upload_user_image_error": "An error ocurred while update user image"
 }

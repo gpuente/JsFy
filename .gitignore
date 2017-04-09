@@ -62,3 +62,5 @@ typings/
 
 # custom files
 config.json
+uploads/users/*
+!uploads/users/.gitkeep
