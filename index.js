@@ -1,13 +1,13 @@
 'use strict'
 
-var config = require('./config.json');
+global.config = require('./config.json');
 global.st = require('./lang/strings_en.json');
 var mongoose = require('mongoose');
 var app = require('./app');
-var port = process.env.PORT || config.app.port;
+var port = process.env.PORT || global.config.app.port;
 
 
-mongoose.connect(config.dbconnection.conecctionString, (err, res) => {
+mongoose.connect(global.config.dbconnection.conecctionString, (err, res) => {
 	if(err){
 		console.log(global.st.db_connection_err);
 		throw err;

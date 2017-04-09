@@ -11,6 +11,7 @@ var bodyParser = require('body-parser');
 var app = express();
 
 //cargar rutas
+var user_routes = require('./routes/UserRoutes');
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
@@ -18,8 +19,6 @@ app.use(bodyParser.json());
 //configurar cabeceras http
 
 //rutas base
-app.get('/test', function(req, res){
-	res.status(200).send({message : global.st.script_success});
-});
+app.use('/api', user_routes);
 
 module.exports = app;
