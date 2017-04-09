@@ -8,5 +8,7 @@
 	"user_password_incorrect": "User or password incorrect",
 	"error_login_header": "Access denied, header authorization not found",
 	"error_login_token_expired": "Access denied, token expired",
-	"error_login_invalid_token": "Access denied, invalid token"
+	"error_login_invalid_token": "Access denied, invalid token",
+	"error_update_user": "An error ocurred while update the user",
+	"user_not_updated": "The user can't be updated"
 }

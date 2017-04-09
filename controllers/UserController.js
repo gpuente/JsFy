@@ -53,6 +53,21 @@ async function loginUser(req, res){
 	}
 }
 
+async function updateUser(req, res){
+	try{
+		var userId = req.params.id;
+		var userData = req.body;
+
+		var promise = User.findByIdAndUpdate(userId, userData);
+		var userUpdated = await	promise;
+		if(!userUpdated) return res.status(404).send({message: global.st.user_not_updated});
+		res.status(200).send({user: userUpdated});
+
+	}catch(err){
+		res.status(500).send({message: global.st.error_update_user});
+	}
+}
+
 
 function _isValidUser(params){
 	if(params.name != null && params.surname != null && params.email != null && params.password != null){
@@ -65,5 +80,6 @@ function _isValidUser(params){
 module.exports = {
 	pruebas,
 	saveUser,
-	loginUser
+	loginUser,
+	updateUser
 };
