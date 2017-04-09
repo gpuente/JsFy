@@ -14,5 +14,6 @@
 	"upload_user_image_not_sended": "Error to upload user image. Image not sended",
 	"upload_user_image_error_ext": "Image extension not valid",
 	"user_image_not_updated": "The user image can't be updated",
-	"upload_user_image_error": "An error ocurred while update user image"
+	"upload_user_image_error": "An error ocurred while update user image",
+	"get_user_image_not_exists": "The image reuqested not exists"
 }

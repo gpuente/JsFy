@@ -1,8 +1,11 @@
 'use strict'
 
+var fs = require('fs');
+var path = require('path');
 var bcrypt = require('bcrypt-nodejs');
 var User = require('../models/User');
 var jwt = require('../services/jwt');
+
 
 function pruebas(req, res){
 	res.status(200).send({
@@ -94,6 +97,13 @@ async function uploadImage(req, res){
 	}
 }
 
+function getImageFile(req, res){
+	var imageFile = req.params.image;
+	var pathImage = global.config.dir.user_images + imageFile;
+	if(!fs.existsSync(pathImage)) return res.status(200).send({message: global.st.get_user_image_not_exists}); 
+	res.sendFile(path.resolve(pathImage));
+}
+
 
 function _isValidUser(params){
 	if(params.name != null && params.surname != null && params.email != null && params.password != null){
@@ -108,5 +118,6 @@ module.exports = {
 	saveUser,
 	loginUser,
 	updateUser,
-	uploadImage
+	uploadImage,
+	getImageFile
 };
