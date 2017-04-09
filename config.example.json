@@ -7,5 +7,10 @@
 	},
 	"jwt":{
 		"secret_password": "define_an_string"
+	},
+	"dir":{
+		"file_system_separator": "/",
+		"file_image_ext_supported": ["jpg","png","gif","jpeg"],
+		"user_images": "./uploads/users"
 	}
 }
