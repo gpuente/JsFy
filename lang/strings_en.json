@@ -15,5 +15,10 @@
 	"upload_user_image_error_ext": "Image extension not valid",
 	"user_image_not_updated": "The user image can't be updated",
 	"upload_user_image_error": "An error ocurred while update user image",
-	"get_user_image_not_exists": "The image reuqested not exists"
+	"get_user_image_not_exists": "The image reuqested not exists",
+	"artist_incomplete": "Complete all fields required",
+	"error_new_artist": "An error ocurred while save new artist",
+	"artist_no_registered": "A problem an ocurred to save artist data",
+	"artist_does_not_exist": "The artist doesn't exists",
+	"error_get_artist": "An error ocurred while getting artist"
 }
