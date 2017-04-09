@@ -12,5 +12,8 @@
 		"file_system_separator": "/",
 		"file_image_ext_supported": ["jpg","png","gif","jpeg"],
 		"user_images": "./uploads/users/"
+	},
+	"artist":{
+		"items_per_page": 3
 	}
 }

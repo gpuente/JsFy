@@ -38,6 +38,29 @@ async function saveArtist(req, res){
 	}
 }
 
+async function getArtists(req, res){
+	try{
+		var page = 1;
+		var itemsPerPage = global.config.artist.items_per_page;
+
+		if(req.params.page) page = req.params.page;
+		var promise = Artist.find().sort('name');
+		var users = await promise;
+		if(!users) return res.status(404).send({message: global.st.there_is_not_artists});
+		var pagination = await Artist.paginate(users, {page: page, limit: itemsPerPage});
+		if(!pagination) return res.response(500).send({message: global.st.error_get_artists});
+		res.status(200).send({
+			total: pagination.total,
+			limit: pagination.limit,
+			page: pagination.page,
+			pages: pagination.pages,
+			artists: pagination.docs
+		});
+	}catch(err){
+		res.status(500).send({message: global.st.error_get_artists});
+	}
+}
+
 function _isValidArtist(params){
 	if(params.name != null && params.description != null){
 		return true;
@@ -48,5 +71,6 @@ function _isValidArtist(params){
 
 module.exports = {
 	getArtist,
-	saveArtist
+	saveArtist,
+	getArtists
 };

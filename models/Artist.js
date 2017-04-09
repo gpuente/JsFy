@@ -1,6 +1,7 @@
 'user strict'
 
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 var Schema = mongoose.Schema;
 
 var ArtistSchema = Schema({
@@ -8,5 +9,7 @@ var ArtistSchema = Schema({
 	description: String,
 	image: String
 });
+
+ArtistSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Artist', ArtistSchema);

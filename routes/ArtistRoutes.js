@@ -11,5 +11,6 @@ var api = express.Router();
 
 api.get('/artist/:id', mdAuth.checkApiAuth, ArtistController.getArtist);
 api.post('/artist', mdAuth.checkApiAuth, ArtistController.saveArtist);
+api.get('/artists/:page?', mdAuth.checkApiAuth, ArtistController.getArtists);
 
 module.exports = api;

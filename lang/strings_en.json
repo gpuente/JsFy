@@ -20,5 +20,7 @@
 	"error_new_artist": "An error ocurred while save new artist",
 	"artist_no_registered": "A problem an ocurred to save artist data",
 	"artist_does_not_exist": "The artist doesn't exists",
-	"error_get_artist": "An error ocurred while getting artist"
+	"error_get_artist": "An error ocurred while getting artist",
+	"there_is_not_artists" : "There is not artists",
+	"error_get_artists": "An error ocurred while get the artists"
 }
