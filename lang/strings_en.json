@@ -22,5 +22,10 @@
 	"artist_does_not_exist": "The artist doesn't exists",
 	"error_get_artist": "An error ocurred while getting artist",
 	"there_is_not_artists" : "There is not artists",
-	"error_get_artists": "An error ocurred while get the artists"
+	"error_get_artists": "An error ocurred while get the artists",
+	"error_update_artist": "An error ocurred while update the artist",
+	"artist_not_updated": "The artist can't be updated",
+	"artist_delete_not_fount": "Artist can't be deleted because was not found",
+	"album_delete_not_found": "Album can't be deleted because was not found",
+	"error_delete_artist": "An error ocurred while delete artist"
 }

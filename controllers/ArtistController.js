@@ -61,6 +61,42 @@ async function getArtists(req, res){
 	}
 }
 
+async function updateArtist(req, res){
+	try{
+		var artistId = req.params.id;
+		var artistData = req.body;
+
+		var promise = Artist.findByIdAndUpdate(artistId, artistData);
+		var artistUpdated = await promise;
+		if(!artistUpdated) return res.status(404).send({message: global.st.artist_not_updated});
+		res.status(200).send({artist: artistUpdated});
+	}catch(err){
+		res.status(500).send({message: global.st.error_update_artist});
+	}
+}
+
+async function deleteCascadeArtist(req, res){
+	try{
+		var artistId = req.params.id;
+
+		var artist = await Artist.findByIdAndRemove(artistId);
+		if(!artist) return res.satus(404).send({message: global.st.artist_delete_not_fount});
+		var albums = await Album.find({artist: artist._id});
+		if(!albums) return res.status(404).send({message: global.st.album_delete_not_found});
+		var songs = [];
+		for (var i = 0; i < albums.lenght ; i++) {
+			var album = await Album.findByIdAndRemove(albums[i]._id);
+			if(!album) continue;
+			var song = await Song.find().remove({album: album._id});
+			if(!song) continue;
+			songs.concat(song);
+		}
+		res.status(200).send({artist: artist, albums: albums, songs: songs});
+	}catch(err){
+		res.status(500).send({message: global.st.error_delete_artist});
+	}
+}
+
 function _isValidArtist(params){
 	if(params.name != null && params.description != null){
 		return true;
@@ -72,5 +108,7 @@ function _isValidArtist(params){
 module.exports = {
 	getArtist,
 	saveArtist,
-	getArtists
+	getArtists,
+	updateArtist,
+	deleteCascadeArtist
 };
