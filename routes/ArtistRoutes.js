@@ -13,7 +13,7 @@ var api = express.Router();
 api.get('/artist/:id', mdAuth.checkApiAuth, ArtistController.getArtist);
 api.post('/artist', mdAuth.checkApiAuth, ArtistController.saveArtist);
 api.get('/artists/:page?', mdAuth.checkApiAuth, ArtistController.getArtists);
-api.put('/update-artist/:id', mdAuth.checkApiAuth, ArtistController.updateArtist);
+api.put('/artist/:id', mdAuth.checkApiAuth, ArtistController.updateArtist);
 api.delete('/artist/:id', mdAuth.checkApiAuth, ArtistController.deleteCascadeArtist);
 
 module.exports = api;
