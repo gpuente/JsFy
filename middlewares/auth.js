@@ -2,7 +2,8 @@
 
 var jwt = require('jwt-simple');
 var moment = require('moment');
-var secret_password = global.config.jwt.secret_password; //define this password in config.json
+var config = require('config');
+var secret_password = config.get('jwt.secret_password');
 
 exports.checkApiAuth = function(req, res, next){
 	if(!req.headers.authorization) return res.status(403).send({message: global.st.error_login_header});

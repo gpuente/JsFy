@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var path = require('path');
+var config = require('config');
 var Artist = require('../models/Artist');
 var Album = require('../models/Album');
 var Song = require('../models/Song');
@@ -41,7 +42,7 @@ async function saveArtist(req, res){
 async function getArtists(req, res){
 	try{
 		var page = 1;
-		var itemsPerPage = global.config.artist.items_per_page;
+		var itemsPerPage = config.get('artist.items_per_page');
 
 		if(req.params.page) page = req.params.page;
 		var promise = Artist.find().sort('name');

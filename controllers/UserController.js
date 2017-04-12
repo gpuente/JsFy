@@ -3,6 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var bcrypt = require('bcrypt-nodejs');
+var config = require('config');
 var User = require('../models/User');
 var jwt = require('../services/jwt');
 
@@ -24,7 +25,6 @@ function saveUser(req, res){
 		user.role = 'ROLE_ADMIN';
 		user.image = 'null';
 		user.password = bcrypt.hashSync(params.password);
-		console.log(user);
 
 		var promise = user.save();
 		promise
@@ -76,14 +76,14 @@ async function uploadImage(req, res){
 		var userId = req.params.id;
 		var fileName = null;
 		if(!req.files.image) return res.status(200).send({message: global.st.upload_user_image_not_sended});
-		var fileSplit = req.files.image.path.split(global.config.dir.file_system_separator);
+		var fileSplit = req.files.image.path.split(config.get('dir.file_system_separator'));
 		var fileFullName = fileSplit[fileSplit.length - 1];
 		var fileName = fileFullName.split('\.')[0];
 		var fileExt = fileFullName.split('\.')[1];
 		var isValidExt = false;
 		
-		for (var i = 0 ; i < global.config.dir.file_image_ext_supported.length; i++) {
-			if(global.config.dir.file_image_ext_supported[i] == fileExt) isValidExt = true;
+		for (var i = 0 ; i < config.get('dir.file_image_ext_supported').length; i++) {
+			if(config.get('dir.file_image_ext_supported')[i] == fileExt) isValidExt = true;
 		}
 
 		if(!isValidExt) return res.status(200).send({message: global.st.upload_user_image_error_ext});
@@ -99,7 +99,7 @@ async function uploadImage(req, res){
 
 function getImageFile(req, res){
 	var imageFile = req.params.image;
-	var pathImage = global.config.dir.user_images + imageFile;
+	var pathImage = config.get('dir.user_images') + imageFile;
 	if(!fs.existsSync(pathImage)) return res.status(200).send({message: global.st.get_user_image_not_exists}); 
 	res.sendFile(path.resolve(pathImage));
 }

@@ -1,10 +1,10 @@
 {
-	"env" : "default",
+	"env" : "development",
 	"app" : {
 		"port" : 3977
 	},
 	"dbconnection":{
-		"conecctionString": "mongodb://localhost:27017/jsfy"
+		"conecctionString": "mongodb://localhost:27017/jsfy_dev"
 	},
 	"jwt":{
 		"secret_password": "define_an_string"

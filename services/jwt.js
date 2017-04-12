@@ -3,7 +3,8 @@
 var jwt = require('jwt-simple');
 var moment = require('moment');
 var payload = require('../res/jwt-payload.json');
-var secret_password = global.config.jwt.secret_password; //define this password in config.json
+var config = require('config');
+var secret_password = config.get('jwt.secret_password');
 
 exports.createToken = function(user){
 	payload.sub = user._id;

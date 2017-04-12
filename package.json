@@ -4,9 +4,9 @@
   "description": "A little clon of spotify for educational purpose",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "start-dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "export NODE_ENV=production && node index.js",
+    "start-dev": "export NODE_ENV=development && nodemon index.js",
+    "test": "mocha --timeout 10000"
   },
   "keywords": [
     "music",
@@ -21,14 +21,19 @@
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.1",
+    "config": "^1.25.1",
     "connect-multiparty": "^2.0.0",
     "express": "^4.15.2",
     "jwt-simple": "^0.5.1",
     "moment": "^2.18.1",
     "mongoose": "^4.9.3",
-    "mongoose-paginate": "^5.0.3"
+    "mongoose-paginate": "^5.0.3",
+    "morgan": "^1.8.1"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.2.0",
     "nodemon": "^1.11.0"
   }
 }

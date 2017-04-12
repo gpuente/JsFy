@@ -1,5 +1,5 @@
 {
-	"env" : "default",
+	"env" : "production",
 	"app" : {
 		"port" : 3977
 	},

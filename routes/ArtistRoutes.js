@@ -3,9 +3,10 @@
 var express = require('express');
 var ArtistController = require('../controllers/ArtistController');
 var multipart = require('connect-multiparty');
+var config = require('config');
 
 var mdAuth = require('../middlewares/auth');
-var mdUpload = multipart({uploadDir: global.config.dir.user_images});
+var mdUpload = multipart({uploadDir: config.get('dir.user_images')});
 
 var api = express.Router();
 
