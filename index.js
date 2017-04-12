@@ -1,6 +1,7 @@
 'use strict'
 
 //global.config = require('./config.json');
+process.env.NODE_ENV = process.env.NODE_ENV.trim();
 global.st = require('./lang/strings_en.json');
 var mongoose = require('mongoose');
 var app = require('./app');

@@ -6,6 +6,8 @@
   "scripts": {
     "start": "export NODE_ENV=production && node index.js",
     "start-dev": "export NODE_ENV=development && nodemon index.js",
+    "start-win": "set NODE_ENV=production && node index.js",
+    "start-dev-win": "set NODE_ENV=development && nodemon index.js",
     "test": "mocha --timeout 10000"
   },
   "keywords": [
