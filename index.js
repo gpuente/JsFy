@@ -10,7 +10,9 @@ var port = process.env.PORT || config.get('app.port');
 let env = process.env.NODE_ENV;
 
 console.log('Current Env: "' + env + '"');
+console.log('Current Env Express: "' + app.get('env') + '"');
 console.log('Config file loaded: ./config/' + config.get('env') + '.json');
+
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.get('dbconnection.conecctionString'), (err, res) => {
