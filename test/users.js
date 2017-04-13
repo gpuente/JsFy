@@ -250,6 +250,10 @@ describe('Users:', () => {
 
 		});
 
+		//it should not edit the email user
+		//it should not edit role user
+		//it should not edit image user
+
 	});
 
 });
