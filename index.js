@@ -2,10 +2,10 @@
 
 /*
 *----------------------------------------------------------------------
-* Clean the app environment for any space 
+* Clean the app environment of any space 
 *----------------------------------------------------------------------
 *
-* Clean the app environment for any spaces to prevent error at the
+* Clean the app environment of any spaces to prevent error at the
 * moment of load 'config' module 
 *
 */
@@ -17,7 +17,7 @@ process.env.NODE_ENV = process.env.NODE_ENV.trim();
 
 /*
 *----------------------------------------------------------------------
-* Set global variablw with string messages
+* Set global variable with string messages
 *----------------------------------------------------------------------
 *
 * Set a global variable 'st' with all messages of the application.
