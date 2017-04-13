@@ -24,17 +24,16 @@ function saveUser(req, res){
 		user.email = params.email;
 		user.role = 'ROLE_ADMIN';
 		user.image = 'null';
-		user.password = bcrypt.hashSync(params.password);
+		user.password = params.password;
 
-		var promise = user.save();
-		promise
+		var promise = user.save()
 			.then(function(userStored){
 				if(userStored) res.status(200).send({ user: userStored });
 			}).catch(function(err){
 				res.status(500).send({ message: global.st.user_no_registered });
 			});
 	}else{
-		res.status(200).send({ message: global.st.user_incomplete });
+		res.status(206).send({ message: global.st.user_incomplete });
 	}
 }
 
@@ -51,7 +50,7 @@ async function loginUser(req, res){
 		if(params.gethash === 'true') return res.status(200).send({token: jwt.createToken(user)});
 		res.status(200).send({user: user});
 	}catch(err){
-		console.log(err);
+		//console.log(err);
 		res.status(404).send({message: global.st.user_password_incorrect});
 	}
 }
@@ -60,6 +59,9 @@ async function updateUser(req, res){
 	try{
 		var userId = req.params.id;
 		var userData = req.body;
+		if(userData.email) delete userData.email;
+		if(userData.role) delete userData.role;
+		if(userData.image) delete userData.image;
 
 		var promise = User.findByIdAndUpdate(userId, userData);
 		var userUpdated = await	promise;
