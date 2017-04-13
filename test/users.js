@@ -227,6 +227,90 @@ describe('Users:', () => {
 		});
 
 
+		it('it should not update an email user', (done) => {
+			let user = new User({
+				name: 'Fran Chain',
+				surname: 'fchain',
+				email: 'fchain@gmail.com',
+				password: '123456',
+				role: 'ROLE_ADMIN',
+				image: 'image.png'
+			});
+			user.save();
+			chai.request(server)
+				.put('/api/user/' + user.id)
+				.send({name: 'Fran Kum', surname: 'fkun', email: 'newemail@gmail.com'})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.have.a('object');
+					res.body.should.have.property('user');
+					res.body.user.should.have.property('_id').eql(user.id);
+					User.findById(user.id, (err, savedUser) => {
+						savedUser.name.should.be.eql('Fran Kum');
+						(savedUser.email == user.email).should.be.true;
+						done();
+					});
+				});
+
+		});
+
+
+		it('it should not update a role user', (done) => {
+			let user = new User({
+				name: 'Fran Chain',
+				surname: 'fchain',
+				email: 'fchain@gmail.com',
+				password: '123456',
+				role: 'ROLE_USER',
+				image: 'image.png'
+			});
+			user.save();
+			chai.request(server)
+				.put('/api/user/' + user.id)
+				.send({name: 'Fran Kum', surname: 'fkun', role: 'ROLE_ADMIN'})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.have.a('object');
+					res.body.should.have.property('user');
+					res.body.user.should.have.property('_id').eql(user.id);
+					User.findById(user.id, (err, savedUser) => {
+						savedUser.name.should.be.eql('Fran Kum');
+						savedUser.role.should.be.eql(user.role);
+						done();
+					});
+				});
+
+		});
+
+		
+		it('it should not update an image user', (done) => {
+			let user = new User({
+				name: 'Fran Chain',
+				surname: 'fchain',
+				email: 'fchain@gmail.com',
+				password: '123456',
+				role: 'ROLE_USER',
+				image: 'image.png'
+			});
+			user.save();
+			chai.request(server)
+				.put('/api/user/' + user.id)
+				.send({name: 'Fran Kum', surname: 'fkun', image: 'noimage.png'})
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.have.a('object');
+					res.body.should.have.property('user');
+					res.body.user.should.have.property('_id').eql(user.id);
+					User.findById(user.id, (err, savedUser) => {
+						savedUser.name.should.be.eql('Fran Kum');
+						savedUser.image.should.be.eql(user.image);
+						done();
+					});
+				});
+
+		});
+
+
 		it('it should update an user', (done) => {
 			let user = new User({
 				name: 'Fran Chain',
@@ -245,14 +329,15 @@ describe('Users:', () => {
 					res.body.should.have.a('object');
 					res.body.should.have.property('user');
 					res.body.user.should.have.property('_id').eql(user.id);
-					done();
+					User.findById(user.id, (err, savedUser) => {
+						savedUser.name.should.be.eql('Fran Kum');
+						savedUser.surname.should.be.eql('fkun');
+						done();
+					});
 				});
 
 		});
 
-		//it should not edit the email user
-		//it should not edit role user
-		//it should not edit image user
 
 	});
 

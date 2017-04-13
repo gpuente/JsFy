@@ -59,6 +59,9 @@ async function updateUser(req, res){
 	try{
 		var userId = req.params.id;
 		var userData = req.body;
+		if(userData.email) delete userData.email;
+		if(userData.role) delete userData.role;
+		if(userData.image) delete userData.image;
 
 		var promise = User.findByIdAndUpdate(userId, userData);
 		var userUpdated = await	promise;
