@@ -44,6 +44,7 @@ let mongoose = require('mongoose');
 let app = require('./app');
 let config = require('config');
 let morgan = require('morgan');
+let clc = require('cli-color');
 
 
 
@@ -75,9 +76,9 @@ let env = process.env.NODE_ENV;
 *
 */
 
-console.log('Current Env: "' + env + '"');
-console.log('Current Env Express: "' + app.get('env') + '"');
-console.log('Config file loaded: ./config/' + config.get('env') + '.json');
+console.log(clc.whiteBright('Current Env: ') + clc.yellowBright('"' + env + '"'));
+console.log(clc.whiteBright('Current Env Express: ') + clc.yellowBright('"' + app.get('env') + '"'));
+console.log(clc.whiteBright('Config file loaded: ') + clc.yellowBright('./config/' + config.get('env') + '.json'));
 
 
 
