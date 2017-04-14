@@ -5,8 +5,8 @@ var mongoosePaginate = require('mongoose-paginate');
 var Schema = mongoose.Schema;
 
 var ArtistSchema = Schema({
-	name: String,
-	description: String,
+	name: {type: String, required: true, unique: true},
+	description: {type: String, required: true},
 	image: String
 });
 

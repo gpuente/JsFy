@@ -15,7 +15,7 @@ async function getArtist(req, res){
 		if(!artist) return res.status(404).send({message: global.st.artist_does_not_exist});
 		res.status(200).send({artist: artist});
 	}catch(err){
-		res.status(500).send({messgae: global.st.error_get_artist});
+		res.status(500).send({message: global.st.error_get_artist});
 	}
 }
 
@@ -23,7 +23,7 @@ async function saveArtist(req, res){
 	try{
 		var artist = new Artist();
 		var params = req.body;
-		if(!_isValidArtist(params)) return res.status(200).send({message: global.st.artist_incomplete});
+		if(!_isValidArtist(params)) return res.status(206).send({message: global.st.artist_incomplete});
 
 		artist.name = params.name;
 		artist.description = params.description;
@@ -81,7 +81,7 @@ async function deleteCascadeArtist(req, res){
 		var artistId = req.params.id;
 
 		var artist = await Artist.findByIdAndRemove(artistId);
-		if(!artist) return res.satus(404).send({message: global.st.artist_delete_not_fount});
+		if(!artist) return res.status(404).send({message: global.st.artist_delete_not_fount});
 		var albums = await Album.find({artist: artist._id});
 		if(!albums) return res.status(404).send({message: global.st.album_delete_not_found});
 		var songs = [];
