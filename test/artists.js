@@ -396,7 +396,7 @@ describe('Artists:', () => {
 			artist.save((err, artistSaved) => {
 				chai.request(server)
 					.post('/api/upload-image-artist/' + artistSaved.id)
-					.attach('image', fs.readFileSync(config.get('test.dir.artist_image_bad')),'artist.bad')
+					.attach('image', fs.readFileSync(config.get('test.dir.artist_image_bad')), config.get('test.dir.artist_image_bad_name'))
 					.end((err, res) => {
 						res.should.have.status(200);
 						res.body.should.have.a('object');
@@ -412,7 +412,7 @@ describe('Artists:', () => {
 			artist.save((err, artistSaved) => {
 				chai.request(server)
 					.post('/api/upload-image-artist/' + 'idnotvalid')
-					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), 'artist.jpg')
+					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), config.get('test.dir.artist_image_name'))
 					.end((err, res) => {
 						res.should.have.status(500);
 						res.body.should.have.a('object');
@@ -428,7 +428,7 @@ describe('Artists:', () => {
 			artist.save((err, artistSaved) => {
 				chai.request(server)
 					.post('/api/upload-image-artist/' + '58eeeda1c345071010095a09')
-					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), 'artist.jpg')
+					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), config.get('test.dir.artist_image_name'))
 					.end((err, res) => {
 						res.should.have.status(404);
 						res.body.should.have.a('object');
@@ -443,7 +443,7 @@ describe('Artists:', () => {
 			artist.save((err, artistSaved) => {
 				chai.request(server)
 					.post('/api/upload-image-artist/' + artistSaved.id)
-					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), 'artist.jpg')
+					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), config.get('test.dir.artist_image_name'))
 					.end((err, res) => {
 						res.should.have.status(200);
 						res.body.should.have.property('artist');
@@ -475,7 +475,7 @@ describe('Artists:', () => {
 			artist.save((err, artistSaved) => {
 				chai.request(server)
 					.post('/api/upload-image-artist/' + artistSaved.id)
-					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), 'artist.jpg')
+					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), config.get('test.dir.artist_image_name'))
 					.end((err, respost) => {
 						respost.should.have.status(200);
 						Artist.findById(artistSaved.id, (err, artistUpdated) => {

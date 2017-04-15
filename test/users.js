@@ -3,6 +3,9 @@ process.env.NODE_ENV = 'test';
 let mongoose = require('mongoose');
 let User = require('../models/User');
 let bcrypt = require('bcrypt-nodejs');
+let fs = require('fs');
+let faker = require('faker');
+let config = require('config');
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -341,4 +344,141 @@ describe('Users:', () => {
 
 	});
 
+
+	describe('/POST upload-image-user', () => {
+		it('it should not upload an image user if the image is not sended', (done) => {
+			let user = new User(_createFakeUserSync());
+			user.save((err, userSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-user/' + userSaved.id)
+					.end((err, res) => {
+						res.should.have.status(206);
+						res.body.should.have.a('object');
+						res.body.should.have.property('message').eql(st.upload_user_image_not_sended);
+						done();
+					});
+			});
+		});
+
+
+		it('it should not upload an image user if the file have an invalid ext', (done) => {
+			let user = new User(_createFakeUserSync());
+			user.save((err, userSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-user/' + userSaved.id)
+					.attach('image', fs.readFileSync(config.get('test.dir.user_image_bad')), config.get('test.dir.user_image_bad_name'))
+					.end((err, res) => {
+						res.should.have.status(200);
+						res.body.should.have.a('object');
+						res.body.should.have.property('message').eql(st.upload_user_image_error_ext);
+						done();
+					});
+			});
+		});
+		
+
+		it('it should not upload an image user if the user id is invalid', (done) => {
+			let user = new User(_createFakeUserSync());
+			user.save((err, userSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-user/' + 'idnotvalid')
+					.attach('image', fs.readFileSync(config.get('test.dir.user_image')), config.get('test.dir.user_image_name'))
+					.end((err, res) => {
+						res.should.have.status(500);
+						res.body.should.have.a('object');
+						res.body.should.have.property('message').eql(st.upload_user_image_error);
+						done();
+					});
+			});
+		});
+		
+
+		it('it should not upload an image user if the user id is not registered', (done) => {
+			let user = new User(_createFakeUserSync());
+			user.save((err, userSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-user/' + '58eeeda1c345071010095a09')
+					.attach('image', fs.readFileSync(config.get('test.dir.user_image')), config.get('test.dir.user_image_name'))
+					.end((err, res) => {
+						res.should.have.status(404)
+						res.body.should.have.a('object');
+						res.body.should.have.property('message').eql(st.user_image_not_updated);
+						done();
+					});
+			});
+		});
+
+
+		it('it should upload an image user', (done) => {
+			let user = new User(_createFakeUserSync());
+			user.save((err, userSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-user/' + userSaved.id)
+					.attach('image', fs.readFileSync(config.get('test.dir.user_image')), config.get('test.dir.user_image_name'))
+					.end((err, res) => {
+						res.should.have.status(200);
+						res.body.should.have.a('object');
+						res.body.should.have.property('user');
+						res.body.user.should.have.property('_id').eql(userSaved.id);
+						User.findById(userSaved.id, (err, userUpdated) => {
+							(fs.existsSync(config.get('dir.user_images') + userUpdated.image)).should.be.true;
+							done();
+						});
+					});
+			});
+		});
+
+	});
+
+
+	describe('/GET get-image-user', () => {
+		it('it should not get an image user if the image requested is not valid', (done) => {
+			chai.request(server)
+				.get('/api/get-image-user/' + 'imagenotvalid')
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.get_user_image_not_exists);
+					done();
+				});
+		});
+		
+
+		it('it should get an image user', (done) => {
+			let user = new User(_createFakeUserSync());
+			user.save((err, userSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-user/' + userSaved.id)
+					.attach('image', fs.readFileSync(config.get('test.dir.user_image')), config.get('test.dir.user_image_name'))
+					.end((err, respost) => {
+						respost.should.have.status(200);
+						respost.body.should.have.a('object');
+						respost.body.should.have.property('user');
+						User.findById(userSaved.id, (err, userUpdated) => {
+							chai.request(server)
+								.get('/api/get-image-user/' + userUpdated.image)
+								.end((err, resget) => {
+									resget.should.have.status(200);
+									resget.should.have.header('content-type', /^image/);
+									done();
+								});
+						});
+					});
+			});
+		});
+
+	});
+
 });
+
+function _createFakeUserSync(){
+	var user = {
+		name: faker.name.findName(),
+		surname: faker.internet.userName(),
+		email: faker.internet.email(),
+		password: faker.internet.password(),
+		role: 'ROLE_USER',
+		image: 'null'
+	};
+	return user;
+}

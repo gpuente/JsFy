@@ -77,7 +77,7 @@ async function uploadImage(req, res){
 	try{
 		var userId = req.params.id;
 		var fileName = null;
-		if(!req.files.image) return res.status(200).send({message: global.st.upload_user_image_not_sended});
+		if(!req.files.image) return res.status(206).send({message: global.st.upload_user_image_not_sended});
 		var fileSplit = req.files.image.path.split(config.get('dir.file_system_separator'));
 		var fileFullName = fileSplit[fileSplit.length - 1];
 		var fileName = fileFullName.split('\.')[0];

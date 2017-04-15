@@ -25,10 +25,14 @@
 	},
 	"test":{
 		"dir":{
-			"res": "./test/res/",
 			"user_image": "./test/res/user.jpg",
+			"user_image_name": "user.jpg",
+			"user_image_bad": "./test/res/user.bad",
+			"user_image_bad_name": "user.bad",
 			"artist_image" : "./test/res/artist.jpg",
-			"artist_image_bad": "./test/res/artist.bad"
+			"artist_image_name": "artist.jpg",
+			"artist_image_bad": "./test/res/artist.bad",
+			"artist_image_bad_name": "artist.bad"
 		}
 	}
 }
