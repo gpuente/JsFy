@@ -4,6 +4,8 @@ let mongoose = require('mongoose');
 let Artist = require('../models/Artist');
 let bcrypt = require('bcrypt-nodejs');
 let config = require('config');
+let faker = require('faker');
+faker.locale = 'es';
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -385,4 +387,14 @@ async function _createArtists(numOfArtists){
 		artists.push(await artist.save());	
 	}
 	return artists;
+}
+
+
+function _createFakeArtist(){
+	var artist = {
+		name: faker.lorem.words(),
+		description: faker.lorem.sentence(),
+		image: faker.lorem.slug() + '.png'
+	};
+	return artist;
 }

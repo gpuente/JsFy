@@ -27,5 +27,10 @@
 	"artist_not_updated": "The artist can't be updated",
 	"artist_delete_not_fount": "Artist can't be deleted because was not found",
 	"album_delete_not_found": "Album can't be deleted because was not found",
-	"error_delete_artist": "An error ocurred while delete artist"
+	"error_delete_artist": "An error ocurred while delete artist",
+	"upload_artist_image_error_ext": "Image extension not valid",
+	"artist_image_not_updated": "The artist image can't be updated",
+	"upload_artist_image_error": "An error ocurred while update artist image",
+	"upload_artist_image_not_sended": "Error to upload artist image. Image not sended",
+	"get_artist_image_not_exists": "The image reuqested not exists"
 }

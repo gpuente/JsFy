@@ -64,3 +64,5 @@ typings/
 config.json
 uploads/users/*
 !uploads/users/.gitkeep
+uploads/artists/*
+!uploads/artists/.gitkeep

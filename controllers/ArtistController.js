@@ -98,6 +98,39 @@ async function deleteCascadeArtist(req, res){
 	}
 }
 
+async function uploadImage(req, res){
+	try{
+		var artistId = req.params.id;
+		var fileName = null;
+		if(!req.files.image) return res.status(200).send({message: global.st.upload_artist_image_not_sended});
+		var fileSplit = req.files.image.path.split(config.get('dir.file_system_separator'));
+		var fileFullName = fileSplit[fileSplit.length - 1];
+		var fileName = fileFullName.split('\.')[0];
+		var fileExt = fileFullName.split('\.')[1];
+		var isValidExt = false;
+		
+		for (var i = 0 ; i < config.get('dir.file_image_ext_supported').length; i++) {
+			if(config.get('dir.file_image_ext_supported')[i] == fileExt) isValidExt = true;
+		}
+
+		if(!isValidExt) return res.status(200).send({message: global.st.upload_artist_image_error_ext});
+
+		var promise = Artist.findByIdAndUpdate(artistId, {image: fileFullName});
+		var artistUpdated = await promise;
+		if(!artistUpdated) return res.status(404).send({message: global.st.artist_image_not_updated});
+		res.status(200).send({artist: artistUpdated});
+	}catch(err){
+		res.status(500).send({message: global.st.upload_artist_image_error});
+	}
+}
+
+function getImageFile(req, res){
+	var imageFile = req.params.image;
+	var pathImage = config.get('dir.artist_images') + imageFile;
+	if(!fs.existsSync(pathImage)) return res.status(200).send({message: global.st.get_artist_image_not_exists}); 
+	res.sendFile(path.resolve(pathImage));
+}
+
 function _isValidArtist(params){
 	if(params.name != null && params.description != null){
 		return true;
@@ -111,5 +144,7 @@ module.exports = {
 	saveArtist,
 	getArtists,
 	updateArtist,
-	deleteCascadeArtist
+	deleteCascadeArtist,
+	uploadImage,
+	getImageFile
 };

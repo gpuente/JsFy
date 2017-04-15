@@ -26,7 +26,7 @@ function saveUser(req, res){
 		user.image = 'null';
 		user.password = params.password;
 
-		var promise = user.save()
+		user.save()
 			.then(function(userStored){
 				if(userStored) res.status(200).send({ user: userStored });
 			}).catch(function(err){
