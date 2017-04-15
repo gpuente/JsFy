@@ -4,6 +4,7 @@ let mongoose = require('mongoose');
 let Artist = require('../models/Artist');
 let bcrypt = require('bcrypt-nodejs');
 let config = require('config');
+let fs = require('fs');
 let faker = require('faker');
 faker.locale = 'es';
 
@@ -373,6 +374,125 @@ describe('Artists:', () => {
 
 	});
 
+
+	describe('/POST upload-image-artist', () => {
+		it('it should not upload an image artist if is not sended', (done) => {
+			let artist = new Artist(_createFakeArtistSync());
+			artist.save((err, artistSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-artist/' + artistSaved.id)
+					.end((err, res) => {
+						res.should.have.status(206);
+						res.body.should.have.a('object');
+						res.body.should.have.property('message').eql(st.upload_artist_image_not_sended);
+						done();
+					});
+			});
+		});
+
+
+		it('it should not upload an image artist if the file have and invalid image ext', (done) => {
+			let artist = new Artist(_createFakeArtistSync());
+			artist.save((err, artistSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-artist/' + artistSaved.id)
+					.attach('image', fs.readFileSync(config.get('test.dir.artist_image_bad')),'artist.bad')
+					.end((err, res) => {
+						res.should.have.status(200);
+						res.body.should.have.a('object');
+						res.body.should.have.property('message').eql(st.upload_artist_image_error_ext);
+						done();
+					});
+			});
+		});
+
+
+		it('it should not upload an image artist if the artist id is ivalid', (done) =>{
+			let artist = new Artist(_createFakeArtistSync());
+			artist.save((err, artistSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-artist/' + 'idnotvalid')
+					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), 'artist.jpg')
+					.end((err, res) => {
+						res.should.have.status(500);
+						res.body.should.have.a('object');
+						res.body.should.have.property('message').eql(st.upload_artist_image_error);
+						done();
+					});
+			});
+		});
+
+
+		it('it shoudl not upload an image artist if the artist id is not registered', (done) => {
+			let artist = new Artist(_createFakeArtistSync());
+			artist.save((err, artistSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-artist/' + '58eeeda1c345071010095a09')
+					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), 'artist.jpg')
+					.end((err, res) => {
+						res.should.have.status(404);
+						res.body.should.have.a('object');
+						res.body.should.have.property('message').eql(st.artist_image_not_updated);
+						done();
+					});
+			});
+		});
+
+		it('it should upload an artist image', (done) => {
+			let artist  = new Artist(_createFakeArtistSync());
+			artist.save((err, artistSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-artist/' + artistSaved.id)
+					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), 'artist.jpg')
+					.end((err, res) => {
+						res.should.have.status(200);
+						res.body.should.have.property('artist');
+						res.body.artist.should.have.property('_id').eql(artistSaved.id);
+						Artist.findById(artistSaved.id, (err, artistUpdated) => {
+							(fs.existsSync(config.get('dir.artist_images') + artistUpdated.image)).should.be.true;
+							done();
+						});
+					});
+			});
+		});
+	});
+
+
+	describe('/GET get-image-artist', () => {
+		it('it should not get an artist image if the image requested is not valid', (done) => {
+			chai.request(server)
+				.get('/api/get-image-artist/' + 'idnotvalid')
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.get_artist_image_not_exists);
+					done();
+				});
+		});
+
+		it('it should get an artist image', (done) => {
+			let artist  = new Artist(_createFakeArtistSync());
+			artist.save((err, artistSaved) => {
+				chai.request(server)
+					.post('/api/upload-image-artist/' + artistSaved.id)
+					.attach('image', fs.readFileSync(config.get('test.dir.artist_image')), 'artist.jpg')
+					.end((err, respost) => {
+						respost.should.have.status(200);
+						Artist.findById(artistSaved.id, (err, artistUpdated) => {
+							chai.request(server)
+							.get('/api/get-image-artist/' + artistUpdated.image)
+							.end((err, resget) => {
+								resget.should.have.status(200);
+								resget.should.have.header('content-type', /^image/);
+								done();
+							});
+						});	
+					});
+			});
+		});
+	});
+
+
 });
 
 
@@ -390,7 +510,7 @@ async function _createArtists(numOfArtists){
 }
 
 
-function _createFakeArtist(){
+function _createFakeArtistSync(){
 	var artist = {
 		name: faker.lorem.words(),
 		description: faker.lorem.sentence(),

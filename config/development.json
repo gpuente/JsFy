@@ -22,5 +22,13 @@
 		"jwt":{
 			"load": true
 		}
+	},
+	"test":{
+		"dir":{
+			"res": "./test/res/",
+			"user_image": "./test/res/user.jpg",
+			"artist_image" : "./test/res/artist.jpg",
+			"artist_image_bad": "./test/res/artist.bad"
+		}
 	}
 }
