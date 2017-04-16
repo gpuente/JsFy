@@ -6,9 +6,6 @@ var multipart = require('connect-multiparty');
 var config = require('config');
 
 var mdAuth = require('../middlewares/auth');
-var mdUpload = multipart({uploadDir: config.get('dir.user_images')});
-
-var mdAuth = require('../middlewares/auth');
 var mdUpload = multipart({uploadDir: config.get('dir.artist_images')});
 
 var api = express.Router();

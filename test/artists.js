@@ -518,3 +518,19 @@ function _createFakeArtistSync(){
 	};
 	return artist;
 }
+
+function getNewArtist(){
+	var promise = new Promise(function(resolve, reject) {
+		var artist = new Artist(_createFakeArtistSync());
+		artist.save((err, artistSaved) =>{
+			if(!artistSaved) return reject(new Error('Artist not saved'));
+			resolve(artistSaved);
+		});
+	});
+	return promise;
+}
+
+module.exports = {
+	_createFakeArtistSync,
+	getNewArtist
+}

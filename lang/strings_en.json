@@ -32,5 +32,9 @@
 	"artist_image_not_updated": "The artist image can't be updated",
 	"upload_artist_image_error": "An error ocurred while update artist image",
 	"upload_artist_image_not_sended": "Error to upload artist image. Image not sended",
-	"get_artist_image_not_exists": "The image reuqested not exists"
+	"get_artist_image_not_exists": "The image reuqested not exists",
+	"album_error_save": "An error has occurred while save the artist",
+	"album_not_registered": "The album can't be saved",
+	"album_incomplete": "Complete all fields required",
+	"album_invalid_artist": "The artist reference is not valid"
 }
