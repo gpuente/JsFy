@@ -105,6 +105,57 @@ describe('Album:', () => {
 
 
 
+	describe('/GET album', () => {
+		it('it should not get an album with invalid id', (done) => {
+			chai.request(server)
+				.get('/api/album/' + 'idnotvalid')
+				.end((err, res) => {
+					res.should.have.status(500);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.album_get_error);
+					done();
+				});
+		});
+
+
+		it('it should not get an album with id not registered', (done) => {
+			chai.request(server)
+				.get('/api/album/' + invalidOId)
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.album_does_not_exist);
+					done();
+				});
+		});
+
+
+		it('it should get an album', (done) => {
+			_createFakeAlbum().then((fakeAlbum) => {
+				album = new Album(fakeAlbum);
+				album.save((err, albumStored) => {
+					chai.request(server)
+						.get('/api/album/' + albumStored.id)
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('album');
+							res.body.album.should.have.property('artist');
+							res.body.album.artist.should.have.property('_id').eql(albumStored.artist.toString());
+							res.body.album.should.have.property('title').eql(albumStored.title);
+							res.body.album.should.have.property('description').eql(albumStored.description);
+							res.body.album.should.have.property('year').eql(albumStored.year);
+							res.body.album.should.have.property('image').eql(albumStored.image);
+							done();
+						});
+				});
+			});
+		});
+
+	});
+
+
+
 });
 
 function _createFakeAlbum(){
@@ -115,7 +166,7 @@ function _createFakeAlbum(){
 				description: faker.lorem.sentence(),
 				year: 1992,
 				image: 'null',
-				artist: artist.id
+				artist: String(artist.id)
 			}
 			resolve(album);
 		}).catch((err) => {

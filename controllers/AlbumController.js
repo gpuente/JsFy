@@ -7,6 +7,16 @@ var Artist = require('../models/Artist');
 var Album = require('../models/Album');
 var Song = require('../models/Song');
 
+async function getAlbum(req, res){
+	try{
+		var album = await Album.findById(req.params.id).populate({path: 'artist'}).exec();
+		if(!album) return res.status(404).send({message: global.st.album_does_not_exist});
+		res.status(200).send({album: album});
+	}catch(err){
+		res.status(500).send({message: global.st.album_get_error});
+	}
+}
+
 async function saveAlbum(req, res){
 	try{
 		if(!_isValidAlbum(req.body)) return res.status(206).send({message: global.st.album_incomplete});
@@ -31,5 +41,6 @@ function _isValidAlbum(params){
 }
 
 module.exports = {
+	getAlbum,
 	saveAlbum
 }
