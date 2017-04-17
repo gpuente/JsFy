@@ -38,5 +38,7 @@
 	"album_incomplete": "Complete all fields required",
 	"album_invalid_artist": "The artist reference is not valid",
 	"album_get_error": "An error occurred while get the album",
-	"album_does_not_exist": "The album doesn't exist"
+	"album_does_not_exist": "The album doesn't exist",
+	"albums_get_error": "An error occurred while get the albums list",
+	"albums_does_not_exists": "The albums doesn't exists"
 }

@@ -11,6 +11,7 @@ var mdUpload = multipart({uploadDir: config.get('dir.album_images')});
 var api = express.Router();
 
 api.get('/album/:id', mdAuth.checkApiAuth, AlbumController.getAlbum);
+api.get('/albumsbyartist/:id', mdAuth.checkApiAuth, AlbumController.getAlbumsByArtist)
 api.post('/album', mdAuth.checkApiAuth, AlbumController.saveAlbum);
 
 module.exports = api;

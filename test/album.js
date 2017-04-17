@@ -156,6 +156,63 @@ describe('Album:', () => {
 
 
 
+	describe('/GET albums', () => {
+		it('it should not get the albums if the artist id is invalid', (done) => {
+			chai.request(server)
+				.get('/api/albumsbyartist/' + 'idnotvalid')
+				.end((err, res) => {
+					res.should.have.status(500);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.album_get_error);
+					done();
+				});
+		});
+
+
+		it('it should not get the albums if the artist id is not registered', (done) => {
+			chai.request(server)
+				.get('/api/albumsbyartist/' + invalidOId)
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.albums_does_not_exists);
+					done();
+				});
+		});
+
+
+		it('it should get the albums of an artist', (done) => {
+			_createFakeAlbum().then((album) => {
+				var album2 = _createFakeAlbumOnly();
+				var album3 = _createFakeAlbumOnly();
+				album2.artist = album.artist;
+				album3.artist = album.artist;
+				var promises = [];
+				promises.push(new Album(album).save());
+				promises.push(new Album(album2).save());
+				promises.push(new Album(album3).save());
+				Promise.all(promises).then(albums => {
+					chai.request(server)
+						.get('/api/albumsbyartist/' + album.artist)
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('albums');
+							res.body.albums.should.have.lengthOf(3);
+							res.body.albums[0].should.have.property('_id');
+							res.body.albums[0].artist.should.have.a('object');
+							res.body.albums[0].should.have.property('artist');
+							res.body.albums[0].artist.should.have.property('_id').eql(album.artist);
+							done();
+						});
+				});
+			});
+		});
+
+	});
+
+
+
 });
 
 function _createFakeAlbum(){
@@ -174,4 +231,15 @@ function _createFakeAlbum(){
 		});
 	});
 	return promise;
+}
+
+function _createFakeAlbumOnly(){
+	var album = {
+			title: faker.lorem.words(),
+			description: faker.lorem.sentence(),
+			year: 1992,
+			image: 'null',
+			artist: 'null'
+		};
+	return album;
 }
