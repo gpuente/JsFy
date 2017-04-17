@@ -19,6 +19,9 @@
 	"artist":{
 		"items_per_page": 3
 	},
+	"album":{
+		"items_per_page": 10
+	},
 	"middleware":{
 		"jwt":{
 			"load": true

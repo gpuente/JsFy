@@ -17,6 +17,8 @@ let should = chai.should();
 
 let st = require('../lang/strings_en.json');
 
+let qtyAlbums = 30;
+
 let invalidOId = '58eeeda1c345071010095a09';
 
 
@@ -156,7 +158,7 @@ describe('Album:', () => {
 
 
 
-	describe('/GET albums', () => {
+	describe('/GET albumsbyartist', () => {
 		it('it should not get the albums if the artist id is invalid', (done) => {
 			chai.request(server)
 				.get('/api/albumsbyartist/' + 'idnotvalid')
@@ -207,6 +209,84 @@ describe('Album:', () => {
 						});
 				});
 			});
+		});
+
+	});
+
+
+
+	describe('/GET albums', () => {
+		it('it should not get albums if not exist any album', (done) => {
+			chai.request(server)
+				.get('/api/albums/')
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.albums_does_not_exists);
+					done();
+				});
+		});
+		
+
+		it('it should get albums paginated', (done) => {
+			var promises = [];
+			var max = qtyAlbums;
+			var cnt = 0;
+
+			_createFakeAlbum().then(function callback(album) {
+				promises.push(new Album(album).save());
+				if(++cnt < max){
+					_createFakeAlbum().then(callback);
+				}else{
+					Promise.all(promises).then(albums => {
+						chai.request(server)
+							.get('/api/albums/')
+							.end((err, res) => {
+								res.should.have.status(200);
+								res.body.should.have.a('object');
+								res.body.should.have.property('total').eql(qtyAlbums);
+								res.body.should.have.property('limit').eql(config.get('album.items_per_page'));
+								res.body.should.have.property('page').eql(1);
+								res.body.should.have.property('pages');
+								res.body.should.have.property('albums');
+								res.body.albums.should.have.a('array');
+								done();
+							});
+					});
+				}
+			});
+			
+		});
+
+
+		it('it should get albums page requested', (done) => {
+			var promises = [];
+			var max = qtyAlbums;
+			var cnt = 0;
+
+			_createFakeAlbum().then(function callback(album) {
+				promises.push(new Album(album).save());
+				if(++cnt < max){
+					_createFakeAlbum().then(callback);
+				}else{
+					Promise.all(promises).then(albums => {
+						chai.request(server)
+							.get('/api/albums/3')
+							.end((err, res) => {
+								res.should.have.status(200);
+								res.body.should.have.a('object');
+								res.body.should.have.property('total').eql(qtyAlbums);
+								res.body.should.have.property('limit').eql(config.get('album.items_per_page'));
+								res.body.should.have.property('page').eql('3');
+								res.body.should.have.property('pages');
+								res.body.should.have.property('albums');
+								res.body.albums.should.have.a('array');
+								done();
+							});
+					});
+				}
+			});
+			
 		});
 
 	});

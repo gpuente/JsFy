@@ -46,6 +46,30 @@ async function getAlbumsByArtist(req, res){
 	}
 }
 
+async function getAlbums(req, res){
+	try{
+		var page = 1;
+		if(req.params.page) page = req.params.page;
+		var albums = await Album
+							.find()
+							.sort('year')
+							.populate({path: 'artist'})
+							.exec();
+		if(albums.length == 0) return res.status(404).send({message: global.st.albums_does_not_exists});
+		var paginate = await Album.paginate(albums, {page: page, limit: config.get('album.items_per_page')});
+		if(!paginate) return res.status(500).send({message: global.st.album_get_error});
+		res.status(200).send({
+			total: paginate.total,
+			limit: paginate.limit,
+			page: paginate.page,
+			pages: paginate.pages,
+			albums: paginate.docs
+		});
+	}catch(err){
+		res.status(500).send({message: global.st.album_get_error});
+	}
+}
+
 function _isValidAlbum(params){
 	if(params.title != null && params.year != null && params.artist != null){
 		return true;
@@ -57,5 +81,6 @@ function _isValidAlbum(params){
 module.exports = {
 	getAlbum,
 	saveAlbum,
-	getAlbumsByArtist
+	getAlbumsByArtist,
+	getAlbums
 }
