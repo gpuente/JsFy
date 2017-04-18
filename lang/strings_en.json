@@ -40,5 +40,9 @@
 	"album_get_error": "An error occurred while get the album",
 	"album_does_not_exist": "The album doesn't exist",
 	"albums_get_error": "An error occurred while get the albums list",
-	"albums_does_not_exists": "The albums doesn't exists"
+	"albums_does_not_exists": "The albums doesn't exists",
+	"album_edit_error": "An error has occurred while edit the album",
+	"album_edit_not_found": "The album doesn't exist",
+	"album_delete_error": "An error has occurred while delete the album",
+	"album_delete_not_found": "The album doesn't exist"
 }

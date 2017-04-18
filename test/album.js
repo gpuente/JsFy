@@ -292,6 +292,129 @@ describe('Album:', () => {
 	});
 
 
+	describe('/PUT album', () => {
+		it('it should not edit an album with invalid id', (done) => {
+			chai.request(server)
+				.put('/api/album/' + 'idnotvalid')
+				.end((err, res) => {
+					res.should.have.status(500);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.album_edit_error);
+					done();
+				});
+		});
+
+
+		it('it should not edit an album with an id not registered', (done) => {
+			chai.request(server)
+				.put('/api/album/' + invalidOId)
+				.send({description: 'new description'})
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.album_edit_not_found);
+					done();
+				});
+		});
+
+
+		it('it should not edit an album if any property is sended', (done) => {
+			_createFakeAlbum().then(fakeAlbum => {
+				var album = new Album(fakeAlbum);
+				album.save((err, albumStored) => {
+					chai.request(server)
+						.put('/api/album/' + albumStored.id)
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('album');
+							res.body.album.should.have.property('_id').eql(albumStored.id);
+							res.body.album.should.have.property('title').eql(albumStored.title);
+							res.body.album.should.have.property('description').eql(albumStored.description);
+							res.body.album.should.have.property('year').eql(albumStored.year);
+							res.body.album.should.have.property('image').eql(albumStored.image);
+							res.body.album.should.have.property('artist').eql(albumStored.artist.toString());
+							done();
+						});
+				});
+			});
+		});
+		
+
+		it('it should not edit an album id', (done) => {
+			_createFakeAlbum().then(fakeAlbum => {
+				var album = new Album(fakeAlbum);
+				album.save((err, albumStored) => {
+					chai.request(server)
+						.put('/api/album/' + albumStored.id)
+						.send({_id: 'idnotvalid'})
+						.end((err, res) => {
+							res.should.have.status(500);
+							res.body.should.have.a('object');
+							res.body.should.have.property('message').eql(st.album_edit_error);
+							Album.findById(albumStored.id, (err, albumEdited) => {
+								albumEdited.id.should.be.eql(albumStored.id);
+								done();
+							});
+						});
+				});
+			});
+		});
+
+
+		it('it should not edit album image property and artist property', (done) => {
+			_createFakeAlbum().then(fakeAlbum => {
+				var album = new Album(fakeAlbum);
+				album.save((err, albumStored) => {
+					chai.request(server)
+						.put('/api/album/' + albumStored.id)
+						.send({image: 'newiamage.png', artist: 'idartist'})
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('album');
+							res.body.album.should.have.property('image').eql(albumStored.image);
+							res.body.album.should.have.property('artist').eql(albumStored.artist.toString());
+							done();
+						});
+				});
+			});
+		});
+
+
+		it('it should edit an album', (done) => {
+			_createFakeAlbum().then(fakeAlbum => {
+				var album = new Album(fakeAlbum);
+				var newAlbum = _createFakeAlbumOnly();
+				album.save((err, albumStored) => {
+					chai.request(server)
+						.put('/api/album/' + albumStored.id)
+						.send(newAlbum)
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('album');
+							Album.findById(albumStored.id, (err, albumEdited) => {
+								albumEdited.title.should.be.eql(newAlbum.title);
+								albumEdited.description.should.be.eql(newAlbum.description);
+								albumEdited.year.should.be.eql(newAlbum.year);
+								albumEdited.image.should.be.eql(albumStored.image);
+								albumEdited.artist.should.be.eql(albumStored.artist);
+								done();
+							});
+						});
+				});
+			});
+		});
+
+	});
+
+
+	//it should not delete an album with invalid id
+	//it should not delete an album with id not registered
+	//it should delete an album recursive (delete their songs)
+
+
 
 });
 
@@ -317,7 +440,7 @@ function _createFakeAlbumOnly(){
 	var album = {
 			title: faker.lorem.words(),
 			description: faker.lorem.sentence(),
-			year: 1992,
+			year: 1990,
 			image: 'null',
 			artist: 'null'
 		};
