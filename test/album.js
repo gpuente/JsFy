@@ -458,6 +458,126 @@ describe('Album:', () => {
 	});
 
 
+	describe('/POST upload-image-album', () => {
+		it('it should not upload an image album if it is not sended', (done) => {
+			_createFakeAlbum().then(fakeAlbum => {
+				var album = new Album(fakeAlbum);
+				album.save((err, albumStored) => {
+					chai.request(server)
+						.post('/api/upload-image-album/' + albumStored.id)
+						.end((err, res) => {
+							res.should.have.status(206);
+							res.body.should.have.a('object');
+							res.body.should.have.property('message').eql(st.album_upload_image_incomplete);
+							done();
+						});
+				});
+			});
+		});
+
+
+		it('it should not upload an image album if the file have an invalid image ext', (done) => {
+			_createFakeAlbum().then(fakeAlbum => {
+				var album = new Album(fakeAlbum);
+				album.save((err, albumStored) => {
+					chai.request(server)
+						.post('/api/upload-image-album/' + albumStored.id)
+						.attach('image', fs.readFileSync(config.get('test.dir.album_image_bad')), config.get('test.dir.album_image_bad_name'))
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('message').eql(st.album_image_error_ext);
+							done();
+						});
+				});
+			});
+		});
+
+		it('it should not upload an album image if the album id is not valid', (done) => {
+			chai.request(server)
+				.post('/api/upload-image-album/' + 'idnotvalid')
+				.attach('image', fs.readFileSync(config.get('test.dir.album_image')), config.get('test.dir.album_image'))
+				.end((err, res) => {
+					res.should.have.status(500);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.album_image_error);
+					done();
+				});
+		});
+
+		it('it should not upload an album image if the album id is not registered', (done) => {
+			chai.request(server)
+				.post('/api/upload-image-album/' + invalidOId)
+				.attach('image', fs.readFileSync(config.get('test.dir.album_image')), config.get('test.dir.album_image'))
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.album_image_not_exist);
+					done();
+				});
+		});
+
+		it('it should upload an album image', (done) => {
+			_createFakeAlbum().then(fakeAlbum => {
+				var album = new Album(fakeAlbum);
+				album.save((err, albumStored) => {
+					chai.request(server)
+						.post('/api/upload-image-album/' + albumStored.id)
+						.attach('image', fs.readFileSync(config.get('test.dir.album_image')), config.get('test.dir.album_image_name'))
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('album');
+							res.body.album.should.have.property('_id').eql(albumStored.id);
+							Album.findById(albumStored.id, (err, albumUpdated) => {
+								(fs.existsSync(config.get('dir.album_images') + albumUpdated.image)).should.be.true;
+								done();
+							});
+						});
+				});
+			});
+		});
+
+	});
+
+
+	describe('/GET get-image-album', () => {
+		it('it should not get an image if the image requested is not valid', (done) => {
+			chai.request(server)
+				.get('/api/get-image-album/' + 'idnotvalid')
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.a('object');
+					res.body.should.have.property('message').eql(st.album_get_image_not_exist);
+					done();
+				});
+		});
+
+		it('it should get an album image', (done) => {
+			_createFakeAlbum().then(fakeAlbum => {
+				var album = new Album(fakeAlbum);
+				album.save((err, albumStored) => {
+					chai.request(server)
+						.post('/api/upload-image-album/' + albumStored.id)
+						.attach('image', fs.readFileSync(config.get('test.dir.album_image')), config.get('test.dir.album_image_name'))
+						.end((err, respost) => {
+							respost.should.have.status(200);
+							Album.findById(albumStored.id, (err, albumUpdated) => {
+								chai.request(server)
+									.get('/api/get-image-album/' + albumUpdated.image)
+									.end((err,resget) => {
+										resget.should.have.status(200);
+										resget.should.have.header('content-type', /^image/);
+										done();
+									});
+							});	
+						});
+				});
+			});
+		});
+	});
+
+
 
 });
 

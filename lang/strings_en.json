@@ -44,5 +44,10 @@
 	"album_edit_error": "An error has occurred while edit the album",
 	"album_edit_not_found": "The album doesn't exist",
 	"album_delete_error": "An error has occurred while delete the album",
-	"album_delete_not_found": "The album doesn't exist"
+	"album_delete_not_found": "The album doesn't exist",
+	"album_upload_image_incomplete": "The album image was not sended",
+	"album_image_error_ext": "The image extension is not valid",
+	"album_image_error": "An error was occurred while upload album image",
+	"album_image_not_exist": "The album does't exist",
+	"album_get_image_not_exist": "The image requested does not exist"
 }

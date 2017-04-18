@@ -391,7 +391,7 @@ describe('Artists:', () => {
 		});
 
 
-		it('it should not upload an image artist if the file have and invalid image ext', (done) => {
+		it('it should not upload an image artist if the file have an invalid image ext', (done) => {
 			let artist = new Artist(_createFakeArtistSync());
 			artist.save((err, artistSaved) => {
 				chai.request(server)

@@ -93,6 +93,40 @@ async function deleteAlbum(req, res){
 	}
 }
 
+async function uploadImage(req, res){
+	try{
+		var albumId = req.params.id;
+		var fileName = null;
+		if(!req.files.image) return res.status(206).send({message: global.st.album_upload_image_incomplete});
+		var fileSplit = req.files.image.path.split(config.get('dir.file_system_separator'));
+		var fileFullName = fileSplit[fileSplit.length - 1];
+		var fileName = fileFullName.split('\.')[0];
+		var fileExt = fileFullName.split('\.')[1];
+		var isValidExt = false;
+		
+		for (var i = 0 ; i < config.get('dir.file_image_ext_supported').length; i++) {
+			if(config.get('dir.file_image_ext_supported')[i] == fileExt) isValidExt = true;
+		}
+
+		if(!isValidExt) return res.status(200).send({message: global.st.album_image_error_ext});
+
+		var promise = Album.findByIdAndUpdate(albumId, {image: fileFullName});
+		var albumUpdated = await promise;
+		if(!albumUpdated) return res.status(404).send({message: global.st.album_image_not_exist});
+		res.status(200).send({album: albumUpdated});
+	}catch(err){
+		res.status(500).send({message: global.st.album_image_error});
+	}
+}
+
+function getImageFile(req, res){
+	var imageFile = req.params.image;
+	var pathImage = config.get('dir.album_images') + imageFile;
+	if(!fs.existsSync(pathImage)) return res.status(404).send({message: global.st.album_get_image_not_exist}); 
+	res.sendFile(path.resolve(pathImage));
+}
+
+
 function _isValidAlbum(params){
 	if(params.title != null && params.year != null && params.artist != null){
 		return true;
@@ -107,5 +141,7 @@ module.exports = {
 	getAlbumsByArtist,
 	getAlbums,
 	editAlbum,
-	deleteAlbum
+	deleteAlbum,
+	uploadImage,
+	getImageFile
 }

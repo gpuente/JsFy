@@ -36,7 +36,11 @@
 			"artist_image" : "./test/res/artist.jpg",
 			"artist_image_name": "artist.jpg",
 			"artist_image_bad": "./test/res/artist.bad",
-			"artist_image_bad_name": "artist.bad"
+			"artist_image_bad_name": "artist.bad",
+			"album_image" : "./test/res/album.jpg",
+			"album_image_name": "album.jpg",
+			"album_image_bad": "./test/res/album.bad",
+			"album_image_bad_name": "album.bad"
 		}
 	}
 }
