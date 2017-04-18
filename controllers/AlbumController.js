@@ -82,6 +82,17 @@ async function editAlbum(req, res){
 	}
 }
 
+async function deleteAlbum(req, res){
+	try{
+		var album = await Album.findByIdAndRemove(req.params.id);
+		if(!album) return res.status(404).send({message: global.st.album_delete_not_found});
+		var songs = await Album.findByIdAndRemove(album.id);
+		res.status(200).send({album: album, songs: songs});
+	}catch(err){
+		res.status(500).send({message: global.st.album_delete_error});
+	}
+}
+
 function _isValidAlbum(params){
 	if(params.title != null && params.year != null && params.artist != null){
 		return true;
@@ -95,5 +106,6 @@ module.exports = {
 	saveAlbum,
 	getAlbumsByArtist,
 	getAlbums,
-	editAlbum
+	editAlbum,
+	deleteAlbum
 }

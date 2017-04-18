@@ -410,9 +410,52 @@ describe('Album:', () => {
 	});
 
 
-	//it should not delete an album with invalid id
-	//it should not delete an album with id not registered
-	//it should delete an album recursive (delete their songs)
+
+	describe('/DELETE album', () => {
+		it('it should not delete an album with invalid id', (done) => {
+			chai.request(server)
+				.delete('/api/album/' + 'idnotvalid')
+				.end((err, res) => {
+					res.should.have.status(500);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.album_delete_error);
+					done();
+				});
+		});
+
+
+		it('it should not delete an album with id not registered', (done) => {
+			chai.request(server)
+				.delete('/api/album/' + invalidOId)
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.album_delete_not_found);
+					done();
+				});	
+		});
+
+
+		it('it should delete an album recursive (delete their songs)', (done) => {
+			_createFakeAlbum().then(fakeAlbum => {
+				var album = new Album(fakeAlbum);
+				album.save((err, albumStored) => {
+					chai.request(server)
+						.delete('/api/album/' + albumStored.id)
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('album');
+							Album.findById(albumStored.id, (err, albumFound) => {
+								(albumFound === null).should.be.true;
+								done();
+							});
+						});
+				});
+			});
+		});
+
+	});
 
 
 

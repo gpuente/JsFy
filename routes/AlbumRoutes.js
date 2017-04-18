@@ -15,5 +15,6 @@ api.get('/albumsbyartist/:id', mdAuth.checkApiAuth, AlbumController.getAlbumsByA
 api.get('/albums/:page?', mdAuth.checkApiAuth, AlbumController.getAlbums);
 api.post('/album', mdAuth.checkApiAuth, AlbumController.saveAlbum);
 api.put('/album/:id', mdAuth.checkApiAuth, AlbumController.editAlbum);
+api.delete('/album/:id', mdAuth.checkApiAuth, AlbumController.deleteAlbum);
 
 module.exports = api;
