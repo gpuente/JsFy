@@ -24,12 +24,14 @@ describe('Users:', () => {
 			done();
 		})
 	});
-	/*
+	
+
 	afterEach((done) => {
-		var albums = findRemoveSync(config.get('dir.user_images'), {extensions: ['.jpg','.bad']});
+		var users = findRemoveSync(config.get('dir.user_images'), {extensions: ['.jpg','.bad']});
+		var artists = findRemoveSync(config.get('dir.artist_images'), {extensions: ['.jpg','.bad']});
+		var albums = findRemoveSync(config.get('dir.album_images'), {extensions: ['.jpg','.bad']});
 		done();
 	});
-	*/
 
 	describe('/POST register', () => {
 		it('it should not register a new user without required data', (done) => {

@@ -32,6 +32,14 @@ describe('Songs:', () => {
 	});
 
 
+	afterEach((done) => {
+		var users = findRemoveSync(config.get('dir.user_images'), {extensions: ['.jpg','.bad']});
+		var artists = findRemoveSync(config.get('dir.artist_images'), {extensions: ['.jpg','.bad']});
+		var albums = findRemoveSync(config.get('dir.album_images'), {extensions: ['.jpg','.bad']});
+		done();
+	});
+
+
 	describe('/POST song', () => {
 		it('it should not create a song with missing data', (done) => {
 			var song = _createFakeSongOnly();

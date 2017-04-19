@@ -8,6 +8,7 @@ let config = require('config');
 let fs = require('fs');
 let faker = require('faker');
 let testArtist = require('./artists');
+let findRemoveSync = require('find-remove');
 faker.locale = 'es';
 
 let chai = require('chai');
@@ -32,6 +33,14 @@ describe('Album:', () => {
 				done();
 			});
 		})
+	});
+
+
+	afterEach((done) => {
+		var users = findRemoveSync(config.get('dir.user_images'), {extensions: ['.jpg','.bad']});
+		var artists = findRemoveSync(config.get('dir.artist_images'), {extensions: ['.jpg','.bad']});
+		var albums = findRemoveSync(config.get('dir.album_images'), {extensions: ['.jpg','.bad']});
+		done();
 	});
 
 
