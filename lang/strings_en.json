@@ -52,5 +52,7 @@
 	"album_get_image_not_exist": "The image requested does not exist",
 	"song_save_incomplete": "Complete all fields required",
 	"song_save_error": "An error occurred while save the song",
-	"song_album_not_exist": "The album doesn't exist"
+	"song_album_not_exist": "The album doesn't exist",
+	"song_get_error": "An error occurred while get the song",
+	"song_get_not_exist": "The song doesn't not exist"
 }

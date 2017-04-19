@@ -7,6 +7,16 @@ var Artist = require('../models/Artist');
 var Album = require('../models/Album');
 var Song = require('../models/Song');
 
+async function getSong(req, res){
+	try{
+		var song = await Song.findById(req.params.id).populate({path: 'album'}).exec();
+		if(!song) return res.status(404).send({message: global.st.song_get_not_exist});
+		res.status(200).send({song: song});
+	}catch(err){
+		res.status(500).send({message: global.st.song_get_error});
+	}
+}
+
 async function saveSong(req, res){
 	try{
 		if(!_isValidSong(req.body)) return res.status(206).send({message: global.st.song_save_incomplete});
@@ -31,5 +41,6 @@ function _isValidSong(song){
 }
 
 module.exports = {
-	saveSong
+	saveSong,
+	getSong
 }

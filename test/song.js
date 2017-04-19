@@ -110,19 +110,75 @@ describe('Songs:', () => {
 
 	});
 
+
+
+	describe('/GET song', () => {
+		it('it sould not get a song with invalid id', (done) => {
+			chai.request(server)
+				.get('/api/song/' + 'idnotvalid')
+				.end((err, res) => {
+					res.should.have.status(500);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.song_get_error);
+					done();
+				});
+		});
+
+
+		it('it should not get a song with id not registered', (done) => {
+			chai.request(server)
+				.get('/api/song/' + invalidOId)
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.song_get_not_exist);
+					done();
+				});
+		});
+
+
+		it('it should get a song', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var song = new Song(fakeSong);
+				song.save((err, songStored) => {
+					chai.request(server)
+						.get('/api/song/' + songStored.id)
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('song');
+							res.body.song.should.have.property('_id').eql(songStored.id);
+							res.body.song.should.have.property('number').eql(songStored.number);
+							res.body.song.should.have.property('name').eql(songStored.name);
+							res.body.song.should.have.property('duration').eql(songStored.duration);
+							res.body.song.should.have.property('file').eql(songStored.file);
+							res.body.song.should.have.property('album');
+							res.body.song.album.should.have.a('object');
+							res.body.song.album.should.have.property('_id').eql(songStored.album.toString());
+							done();
+						});
+				});
+			});
+		});
+
+	});
+
+
+
+
 });
 
 
-function _createFakeSong(qty = 1){
-	var promises = [];
-	var songs = _createFakeSongOnly(qty);
-	testAlbum._createFakeAlbum().then(album => {
-		for(i = 0; i < songs.length; i++){
-			songs[i].album = album.id;
-			promises.push(new Song(songs[i]).save());
-		}
-		return promises;
-	});	
+function _createFakeSong(){
+	var promise = new Promise(function (resolve, reject) {
+		testAlbum._createFakeAlbumAndStore().then(album => {
+			var song = _createFakeSongOnly(1, album.id);
+			resolve(song);
+		}).catch((err) => {
+			reject(err);
+		});
+	});
+	return promise;
 }
 
 function _createFakeSongOnly(qty = 1, album = 'null'){
