@@ -11,6 +11,7 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../index');
 let should = chai.should();
+let findRemoveSync = require('find-remove');
 
 let st = require('../lang/strings_en.json');
 
@@ -23,6 +24,12 @@ describe('Users:', () => {
 			done();
 		})
 	});
+	/*
+	afterEach((done) => {
+		var albums = findRemoveSync(config.get('dir.user_images'), {extensions: ['.jpg','.bad']});
+		done();
+	});
+	*/
 
 	describe('/POST register', () => {
 		it('it should not register a new user without required data', (done) => {

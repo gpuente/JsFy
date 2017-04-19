@@ -49,5 +49,8 @@
 	"album_image_error_ext": "The image extension is not valid",
 	"album_image_error": "An error was occurred while upload album image",
 	"album_image_not_exist": "The album does't exist",
-	"album_get_image_not_exist": "The image requested does not exist"
+	"album_get_image_not_exist": "The image requested does not exist",
+	"song_save_incomplete": "Complete all fields required",
+	"song_save_error": "An error occurred while save the song",
+	"song_album_not_exist": "The album doesn't exist"
 }

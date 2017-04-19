@@ -599,6 +599,26 @@ function _createFakeAlbum(){
 	return promise;
 }
 
+function _createFakeAlbumAndStore(){
+	var promise = new Promise(function (resolve, reject) {
+		testArtist.getNewArtist().then((artist) => {
+			var album = new Album({
+				title: faker.lorem.words(),
+				description: faker.lorem.sentence(),
+				year: 1992,
+				image: 'null',
+				artist: String(artist.id)
+			});
+			album.save((err, albumStored) => {
+				resolve(albumStored);
+			});
+		}).catch((err) => {
+			reject(err);
+		});
+	});
+	return promise;
+}
+
 function _createFakeAlbumOnly(){
 	var album = {
 			title: faker.lorem.words(),
@@ -608,4 +628,10 @@ function _createFakeAlbumOnly(){
 			artist: 'null'
 		};
 	return album;
+}
+
+module.exports = {
+	_createFakeAlbum,
+	_createFakeAlbumOnly,
+	_createFakeAlbumAndStore
 }
