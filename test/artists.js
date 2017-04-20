@@ -6,6 +6,7 @@ let bcrypt = require('bcrypt-nodejs');
 let config = require('config');
 let fs = require('fs');
 let faker = require('faker');
+let findRemoveSync = require('find-remove');
 faker.locale = 'es';
 
 let chai = require('chai');
@@ -25,6 +26,14 @@ describe('Artists:', () => {
 		Artist.remove({}, (err) => {
 			done();
 		})
+	});
+
+
+	afterEach((done) => {
+		var users = findRemoveSync(config.get('dir.user_images'), {extensions: ['.jpg','.bad']});
+		var artists = findRemoveSync(config.get('dir.artist_images'), {extensions: ['.jpg','.bad']});
+		var albums = findRemoveSync(config.get('dir.album_images'), {extensions: ['.jpg','.bad']});
+		done();
 	});
 
 
@@ -391,7 +400,7 @@ describe('Artists:', () => {
 		});
 
 
-		it('it should not upload an image artist if the file have and invalid image ext', (done) => {
+		it('it should not upload an image artist if the file have an invalid image ext', (done) => {
 			let artist = new Artist(_createFakeArtistSync());
 			artist.save((err, artistSaved) => {
 				chai.request(server)
@@ -517,4 +526,20 @@ function _createFakeArtistSync(){
 		image: faker.lorem.slug() + '.png'
 	};
 	return artist;
+}
+
+function getNewArtist(){
+	var promise = new Promise(function(resolve, reject) {
+		var artist = new Artist(_createFakeArtistSync());
+		artist.save((err, artistSaved) =>{
+			if(!artistSaved) return reject(new Error('Artist not saved'));
+			resolve(artistSaved);
+		});
+	});
+	return promise;
+}
+
+module.exports = {
+	_createFakeArtistSync,
+	getNewArtist
 }

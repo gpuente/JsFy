@@ -11,6 +11,7 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../index');
 let should = chai.should();
+let findRemoveSync = require('find-remove');
 
 let st = require('../lang/strings_en.json');
 
@@ -22,6 +23,14 @@ describe('Users:', () => {
 		User.remove({}, (err) => {
 			done();
 		})
+	});
+	
+
+	afterEach((done) => {
+		var users = findRemoveSync(config.get('dir.user_images'), {extensions: ['.jpg','.bad']});
+		var artists = findRemoveSync(config.get('dir.artist_images'), {extensions: ['.jpg','.bad']});
+		var albums = findRemoveSync(config.get('dir.album_images'), {extensions: ['.jpg','.bad']});
+		done();
 	});
 
 	describe('/POST register', () => {
