@@ -163,6 +163,69 @@ describe('Songs:', () => {
 
 	});
 
+	describe('/GET songsbyalbum', () => {
+		it('it should not get songs with an invalid album id', (done) => {
+			chai.request(server)
+				.get('/api/songsbyalbum/' + 'idnotvalid')
+				.end((err, res) => {
+					res.should.have.status(500);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.songsbyalbum_error);
+					done();
+				});
+		});
+
+
+		it('it should not get songs with an no registered album id', (done) => {
+			chai.request(server)
+				.get('/api/songsbyalbum/' + invalidOId)
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.songsbyalbum_album_not_exist);
+					done();
+				});
+		});
+
+
+		it('it should get the songs of an album', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var promises = [];
+				for(var i = 0; i < 10; i++){
+					var promise = new Promise((resolve, reject) => {
+						var song = _createFakeSongOnly(1,fakeSong.album);
+						var newSong = new Song(song);
+						newSong.save((err, songStored) => {
+							if(err) return reject(err);
+							resolve(songStored);
+						});
+					});
+					promises.push(promise);
+				}
+				Promise.all(promises).then(songs => {
+					chai.request(server)
+						.get('/api/songsbyalbum/' + fakeSong.album)
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('songs');
+							res.body.songs.should.have.length(10);
+							res.body.songs[0].should.have.property('album');
+							res.body.songs[0].album.should.have.a('object');
+							res.body.songs[0].album.should.have.property('artist');
+							res.body.songs[0].album.artist.should.have.a('object');
+							done();
+						});
+				}).catch(err => {
+					console.log(err);
+				});
+
+			});
+		});
+
+
+	});
+
 
 
 

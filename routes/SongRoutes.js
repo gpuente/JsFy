@@ -11,6 +11,7 @@ var mdAuth = require('../middlewares/auth');
 var api = express.Router();
 
 api.get('/song/:id', mdAuth.checkApiAuth, SongController.getSong);
+api.get('/songsbyalbum/:id', mdAuth.checkApiAuth, SongController.getSongsByAlbum);
 api.post('/song', mdAuth.checkApiAuth, SongController.saveSong);
 
 module.exports = api;

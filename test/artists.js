@@ -28,7 +28,7 @@ describe('Artists:', () => {
 		})
 	});
 
-
+	
 	afterEach((done) => {
 		var users = findRemoveSync(config.get('dir.user_images'), {extensions: ['.jpg','.bad']});
 		var artists = findRemoveSync(config.get('dir.artist_images'), {extensions: ['.jpg','.bad']});

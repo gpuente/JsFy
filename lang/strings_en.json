@@ -54,5 +54,7 @@
 	"song_save_error": "An error occurred while save the song",
 	"song_album_not_exist": "The album doesn't exist",
 	"song_get_error": "An error occurred while get the song",
-	"song_get_not_exist": "The song doesn't not exist"
+	"song_get_not_exist": "The song doesn't not exist",
+	"songsbyalbum_error": "An error occurred while get the songs",
+	"songsbyalbum_album_not_exist": "The album requested doesn't exist"
 }

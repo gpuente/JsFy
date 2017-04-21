@@ -32,6 +32,23 @@ async function saveSong(req, res){
 	}
 }
 
+async function getSongsByAlbum(req, res){
+	try{
+		var songs = await Song.find({album: req.params.id})
+							.sort('number')
+							.populate({path: 'album', 
+										populate: {
+												path: 'artist', 
+												model: 'Artist'}
+											})
+							.exec();
+		if(songs.length == 0) return res.status(404).send({message: global.st.songsbyalbum_album_not_exist});
+		res.status(200).send({songs: songs});
+	}catch(err){
+		res.status(500).send({message: global.st.songsbyalbum_error});
+	}
+}
+
 function _isValidSong(song){
 	if(song.name != null && song.number != null && song.duration != null && song.album != null){
 		return true;
@@ -42,5 +59,6 @@ function _isValidSong(song){
 
 module.exports = {
 	saveSong,
-	getSong
+	getSong,
+	getSongsByAlbum
 }
