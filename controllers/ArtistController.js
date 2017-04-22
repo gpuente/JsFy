@@ -46,9 +46,9 @@ async function getArtists(req, res){
 
 		if(req.params.page) page = req.params.page;
 		var promise = Artist.find().sort('name');
-		var users = await promise;
-		if(!users) return res.status(404).send({message: global.st.there_is_not_artists});
-		var pagination = await Artist.paginate(users, {page: page, limit: itemsPerPage});
+		var artists = await promise;
+		if(!artists) return res.status(404).send({message: global.st.there_is_not_artists});
+		var pagination = await Artist.paginate(artists, {page: page, limit: itemsPerPage});
 		if(!pagination) return res.response(500).send({message: global.st.error_get_artists});
 		res.status(200).send({
 			total: pagination.total,

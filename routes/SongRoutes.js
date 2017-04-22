@@ -12,6 +12,7 @@ var api = express.Router();
 
 api.get('/song/:id', mdAuth.checkApiAuth, SongController.getSong);
 api.get('/songsbyalbum/:id', mdAuth.checkApiAuth, SongController.getSongsByAlbum);
+api.get('/songs/:page?', mdAuth.checkApiAuth, SongController.getSongs);
 api.post('/song', mdAuth.checkApiAuth, SongController.saveSong);
 
 module.exports = api;

@@ -49,6 +49,38 @@ async function getSongsByAlbum(req, res){
 	}
 }
 
+async function getSongs(req, res){
+	try{
+		var page = 1;
+		var itemsPerPage = config.get('song.items_per_page');
+
+		if(req.params.page) page = req.params.page;
+		var options = {
+			page: page,
+			limit: itemsPerPage,
+			sort: 'album number',
+			populate: {
+				path: 'album',
+				populate: {
+					path: 'artist',
+					model: 'Artist'
+				}
+			}
+		};
+		var pagination = await Song.paginate({}, options);
+		if(!pagination) return res.status(404).send({message: global.st.songs_get_not_found});
+		res.status(200).send({
+			total: pagination.total,
+			limit: pagination.limit,
+			page: pagination.page,
+			pages: pagination.pages,
+			songs: pagination.docs
+		});
+	}catch(err){
+		res.status(500).send({message: global.st.songs_get_error});
+	}
+}
+
 function _isValidSong(song){
 	if(song.name != null && song.number != null && song.duration != null && song.album != null){
 		return true;
@@ -60,5 +92,6 @@ function _isValidSong(song){
 module.exports = {
 	saveSong,
 	getSong,
-	getSongsByAlbum
+	getSongsByAlbum,
+	getSongs
 }

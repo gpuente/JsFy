@@ -227,6 +227,107 @@ describe('Songs:', () => {
 	});
 
 
+	describe('/GET songs', () => {
+		it('it should get a a list of songs', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var promises = [];
+				for(var i = 0; i < 50; i++){
+					var promise = new Promise((resolve, reject) => {
+						var songData = _createFakeSongOnly(1,fakeSong.album);
+						var song = new Song(songData);
+						song.save((err, songStored) => {
+							if(err) return reject(err);
+							resolve(songStored);
+						});
+					});
+					promises.push(promise);
+				}
+				Promise.all(promises).then(songs => {
+					chai.request(server)
+						.get('/api/songs')
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('total').eql(promises.length);
+							res.body.should.have.property('limit').eql(config.get('song.items_per_page'));
+							res.body.should.have.property('page').eql(1);
+							res.body.should.have.property('songs');
+							res.body.songs.should.have.a('array');
+							res.body.songs.should.have.lengthOf(config.get('song.items_per_page'));
+							res.body.songs[0].should.have.property('album');
+							res.body.songs[0].album.should.have.a('object');
+							res.body.songs[0].album.should.have.property('artist');
+							res.body.songs[0].album.artist.should.have.a('object');
+							done();
+						});
+				});
+			});
+		});
+
+
+		it('it should get a specific page of songs', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var promises = [];
+				for(var i = 0; i < 50; i++){
+					var promise = new Promise((resolve, reject) => {
+						var songData = _createFakeSongOnly(1, fakeSong.album);
+						var song = new Song(songData);
+						song.save((err, songStored) => {
+							if(err) return reject(err);
+							resolve(songStored);
+						});
+					});
+					promises.push(promise);
+				}
+				Promise.all(promises).then(songs => {
+					chai.request(server)
+						.get('/api/songs/' + '3')
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('total').eql(promises.length);
+							res.body.should.have.property('limit').eql(config.get('song.items_per_page'));
+							res.body.should.have.property('page').eql('3');
+							res.body.should.have.property('songs');
+							res.body.songs.should.have.a('array');
+							done();
+						});
+				});
+			});
+		});
+
+
+		it('it should get an empty array of songs if the page requested does not exist', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var promises = [];
+				for(var i = 0; i < 20; i++){
+					var promise = new Promise((resolve, reject) => {
+						var songData = _createFakeSongOnly(1, fakeSong.album);
+						var song = new Song(songData);
+						song.save((err, songStored) => {
+							if(err) return reject(err);
+							resolve(songStored);
+						});
+					});
+					promises.push(promise);
+				}
+				Promise.all(promises).then(songs => {
+					chai.request(server)
+						.get('/api/songs/' + '10000')
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('page');
+							res.body.songs.should.have.lengthOf(0);
+							done();
+						});
+				});
+			});
+		});
+		
+	});
+
+
 
 
 });
