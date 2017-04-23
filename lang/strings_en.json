@@ -59,5 +59,7 @@
 	"songs_get_error": "An error occurred while get the songs",
 	"songs_get_not_found": "There is not songs available",
 	"song_update_error": "An error occurred while update song",
-	"song_update_not_exist": "The song doesn't exist"
+	"song_update_not_exist": "The song doesn't exist",
+	"song_delete_error": "An error occurred while delete song",
+	"song_delete_not_exist": "The song doesn't exist"
 }

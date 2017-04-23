@@ -15,5 +15,6 @@ api.get('/songsbyalbum/:id', mdAuth.checkApiAuth, SongController.getSongsByAlbum
 api.get('/songs/:page?', mdAuth.checkApiAuth, SongController.getSongs);
 api.post('/song', mdAuth.checkApiAuth, SongController.saveSong);
 api.put('/song/:id', mdAuth.checkApiAuth, SongController.updateSong);
+api.delete('/song/:id', mdAuth.checkApiAuth, SongController.deleteSong);
 
 module.exports = api;

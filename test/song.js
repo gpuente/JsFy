@@ -457,6 +457,55 @@ describe('Songs:', () => {
 	});
 
 
+	describe('/DELETE song', () => {
+		//it should not delete a song with invalid id
+		it('it should not delete a song with invalid id', (done) => {
+			chai.request(server)
+				.delete('/api/song/' + 'idnotvalid')
+				.end((err, res) => {
+					res.should.have.status(500);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.song_delete_error);
+					done();
+				});
+		});
+
+
+		//it should not delete a song with no registered id
+		it('it should not delete a song with no registered id', (done) => {
+			chai.request(server)
+				.delete('/api/song/' + invalidOId)
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.song_delete_not_exist);
+					done();
+				});
+		});
+
+
+		//it should delete a song
+		it('it should delete a song', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var song = new Song(fakeSong);
+				song.save((err, songStored) => {
+					chai.request(server)
+						.delete('/api/song/' + songStored.id)
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('song');
+							Song.findById(songStored.id, (err, songDeleted) => {
+								(songDeleted === null).should.be.true;
+								done();
+							});
+						});
+				});
+			});
+		});
+	});
+
+
 
 });
 
@@ -478,6 +527,13 @@ function _createFakeSong(){
 	return promise;
 }
 
+/**
+ * Create a Song object with fake values. Return the fake song object
+ * 
+ * @param {number} [qty=1] Qty of songs to create, by default 1
+ * @param {string} [album='null']  Album id that should have the fake song object
+ * @returns {object} Song object
+ */
 function _createFakeSongOnly(qty = 1, album = 'null'){
 	var songs = [];
 	for(var i = 0; i < qty; i++){

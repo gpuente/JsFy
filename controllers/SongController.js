@@ -94,6 +94,16 @@ async function updateSong(req, res){
 	}
 }
 
+async function deleteSong(req, res){
+	try {
+		var song = await Song.findByIdAndRemove(req.params.id);
+		if(!song) return res.status(404).send({message: global.st.song_delete_not_exist});
+		res.status(200).send({song: song});
+	} catch (err) {
+		res.status(500).send({message: global.st.song_delete_error});
+	}
+}
+
 function _isValidSong(song){
 	if(song.name != null && song.number != null && song.duration != null && song.album != null){
 		return true;
@@ -107,5 +117,6 @@ module.exports = {
 	getSong,
 	getSongsByAlbum,
 	getSongs,
-	updateSong
+	updateSong,
+	deleteSong
 }
