@@ -328,11 +328,144 @@ describe('Songs:', () => {
 	});
 
 
+	describe('/PUT song', () => {
+		//it should not edit a song with invalid id
+		it('it should not edit a song with invalid id', (done) => {
+			chai.request(server)
+				.put('/api/song/' + 'idnotvalid')
+				.end((err, res) => {
+					res.should.have.status(500);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.song_update_error);
+					done();
+				});
+		});
+
+
+		//it should not edit a song with no registered id
+		it('it should not edit a song with no registered id', (done) => {
+			chai.request(server)
+				.put('/api/song/' + invalidOId)
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.song_update_not_exist);
+					done();
+				});
+		});
+
+
+		//it should not edit the song id
+		it('it should not edit the song id', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var song = new Song(fakeSong);
+				song.save((err, songStored) => {
+					chai.request(server)
+						.put('/api/song/' + songStored.id)
+						.send({_id: invalidOId})
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('song');
+							Song.findById(songStored.id, (err, songFound) => {
+								songFound.id.should.be.eql(songStored.id);
+								done();
+							});
+						});
+				});
+			});
+		});
+
+
+
+		it('it should not edit an album song', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var song = new Song(fakeSong);
+				song.save((err, songStored) => {
+					chai.request(server)
+						.put('/api/song/' + songStored.id)
+						.send({album: invalidOId})
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('song');
+							Song.findById(songStored.id, (err, songFound) => {
+								songFound.album.should.be.eql(songStored.album);
+								done();
+							});
+						});
+				});
+			});
+		});
+
+
+		//it should not edit the file song
+		it('it should not edit the file song', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var song = new Song(fakeSong);
+				song.save((err, songStored) => {
+					chai.request(server)
+						.put('/api/song/' + songStored.id)
+						.send({file: 'somefile.png'})
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('song');
+							Song.findById(songStored.id, (err, songFound) => {
+								songFound.file.should.be.eql(songStored.file);
+								done();
+							});
+						});
+				});
+			});
+		});
+
+
+		//it should edit a song
+		it('it should edit a song', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var song = new Song(fakeSong);
+				song.save((err, songStored) => {
+					var params = {
+						number: 13,
+						name: 'new song name',
+						duration: '15:55',
+						file: 'new_file.mp3',
+						artist: 'new_artist_id'
+					};
+					chai.request(server)
+						.put('/api/song/' + songStored.id)
+						.send(params)
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('song');
+							Song.findById(songStored.id, (err, songFound) => {
+								songFound.id.should.be.eql(songStored.id.toString());
+								songFound.number.should.be.eql(params.number);
+								songFound.name.should.be.eql(params.name);
+								songFound.duration.should.be.eql(params.duration);
+								songFound.file.should.be.eql(songStored.file);
+								songFound.album.should.be.eql(songStored.album);
+								done();
+							});
+						});
+				});
+			});
+		});
+
+	});
+
 
 
 });
 
 
+/**
+ * Create an artist, album in the database and returns a promise with Song data and album id set
+ * 
+ * @returns {promise}
+ */
 function _createFakeSong(){
 	var promise = new Promise(function (resolve, reject) {
 		testAlbum._createFakeAlbumAndStore().then(album => {

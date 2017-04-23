@@ -81,6 +81,19 @@ async function getSongs(req, res){
 	}
 }
 
+async function updateSong(req, res){
+	try {
+		if(req.body._id) delete req.body._id;
+		if(req.body.file) delete req.body.file;
+		if(req.body.album) delete req.body.album;
+		var song = await Song.findByIdAndUpdate(req.params.id, req.body);
+		if(!song) return res.status(404).send({message: global.st.song_update_not_exist});
+		res.status(200).send({song: song});
+	}catch(err){
+		res.status(500).send({message: global.st.song_update_error});
+	}
+}
+
 function _isValidSong(song){
 	if(song.name != null && song.number != null && song.duration != null && song.album != null){
 		return true;
@@ -93,5 +106,6 @@ module.exports = {
 	saveSong,
 	getSong,
 	getSongsByAlbum,
-	getSongs
+	getSongs,
+	updateSong
 }

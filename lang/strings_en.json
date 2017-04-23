@@ -26,7 +26,6 @@
 	"error_update_artist": "An error ocurred while update the artist",
 	"artist_not_updated": "The artist can't be updated",
 	"artist_delete_not_fount": "Artist can't be deleted because was not found",
-	"album_delete_not_found": "Album can't be deleted because was not found",
 	"error_delete_artist": "An error ocurred while delete artist",
 	"upload_artist_image_error_ext": "Image extension not valid",
 	"artist_image_not_updated": "The artist image can't be updated",
@@ -58,5 +57,7 @@
 	"songsbyalbum_error": "An error occurred while get the songs",
 	"songsbyalbum_album_not_exist": "The album requested doesn't exist",
 	"songs_get_error": "An error occurred while get the songs",
-	"songs_get_not_found": "There is not songs available"
+	"songs_get_not_found": "There is not songs available",
+	"song_update_error": "An error occurred while update song",
+	"song_update_not_exist": "The song doesn't exist"
 }
