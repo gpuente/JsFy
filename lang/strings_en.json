@@ -61,5 +61,9 @@
 	"song_update_error": "An error occurred while update song",
 	"song_update_not_exist": "The song doesn't exist",
 	"song_delete_error": "An error occurred while delete song",
-	"song_delete_not_exist": "The song doesn't exist"
+	"song_delete_not_exist": "The song doesn't exist",
+	"song_upload_file_missing": "You must send a song file",
+	"song_upload_file_ext_err": "The file ext is invalid",
+	"song_upload_file_err": "An error occurred while upload file song",
+	"song_upload_file_not_exist": "The song doesn't exist"
 }

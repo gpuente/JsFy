@@ -36,6 +36,7 @@ describe('Songs:', () => {
 		var users = findRemoveSync(config.get('dir.user_images'), {extensions: ['.jpg','.bad']});
 		var artists = findRemoveSync(config.get('dir.artist_images'), {extensions: ['.jpg','.bad']});
 		var albums = findRemoveSync(config.get('dir.album_images'), {extensions: ['.jpg','.bad']});
+		var songs = findRemoveSync(config.get('dir.song_file'), {extensions: ['.mp3','.bad']});
 		done();
 	});
 
@@ -506,6 +507,112 @@ describe('Songs:', () => {
 	});
 
 
+
+	describe('/POST upload-file-song', () => {
+		//it should not upload a file song if is not sended
+		it('it should not upload a file song if is not sended', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var song = new Song(fakeSong);
+				song.save((err, songStored) => {
+					chai.request(server)
+						.post('/api/upload-file-song/' + songStored.id)
+						.end((err, res) => {
+							res.should.have.status(206);
+							res.body.should.have.a('object');
+							res.body.should.have.property('message').eql(st.song_upload_file_missing);
+							done();
+						});
+				});
+			});
+		});
+
+
+		//it should not upload a file song with invalid ext
+		it('it should not upload a file song with invalid ext', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var song = new Song(fakeSong);
+				song.save((err, songStored) => {
+					chai.request(server)
+						.post('/api/upload-file-song/' + songStored.id)
+						.attach('song', fs.readFileSync(config.get('test.dir.song_file_bad')), config.get('test.dir.song_file_bad_name'))
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('message').eql(st.song_upload_file_ext_err);
+							done();
+						});
+				});
+			});
+		});
+
+
+		//it should not upload a file song if the song id is not valid
+		it('it should not upload a file song if the song id is not valid', (done) => {
+			_createFakeSong().then(fakeSong => {
+				var song = new Song(fakeSong);
+				song.save((err, songStored) => {
+					chai.request(server)
+						.post('/api/upload-file-song/' + 'idnotvalid')
+						.attach('song', fs.readFileSync(config.get('test.dir.song_file')), config.get('test.dir.song_file_name'))
+						.end((err, res) => {
+							res.should.have.status(500);
+							res.body.should.have.a('object');
+							res.body.should.have.property('message').eql(st.song_upload_file_err);
+							done();
+						});
+				});
+			});
+		});
+
+
+		//it should not upload a file song if the song id is not registered
+		it('it should not upload a file song if the song id is not registered', (done) => {
+			_createFakeSong().then(songData => {
+				var song = new Song(songData);
+				song.save((err, songStored) => {
+					chai.request(server)
+						.post('/api/upload-file-song/' + invalidOId)
+						.attach('song', fs.readFileSync(config.get('test.dir.song_file')), config.get('test.dir.song_file_name'))
+						.end((err, res) => {
+							res.should.have.status(404);
+							res.body.should.have.a('object');
+							res.body.should.have.property('message').eql(st.song_upload_file_not_exist);
+							done();
+						});
+				});
+			});
+		});
+
+
+		//it should upload a file song
+		it('it should upload a file song', (done) => {
+			_createFakeSong().then(songData => {
+				var song = new Song(songData);
+				song.save((err, songStored) => {
+					chai.request(server)
+						.post('/api/upload-file-song/' + songStored.id)
+						.attach('song', fs.readFileSync(config.get('test.dir.song_file')), config.get('test.dir.song_file_name'))
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.should.have.a('object');
+							res.body.should.have.property('song');
+							res.body.song.should.have.property('_id');
+							Song.findById(songStored.id, (err, songFound) => {
+								(fs.existsSync(config.get('dir.song_file') + songFound.file)).should.be.true;
+								done();
+							});
+						});
+				});
+			});
+		});
+	});
+
+
+
+	describe('/GET get-file-song', () => {
+		//it should not get a file song if the song not exist
+		//it should get a file song
+	});
 
 });
 

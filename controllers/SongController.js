@@ -104,6 +104,28 @@ async function deleteSong(req, res){
 	}
 }
 
+async function uploadFileSong(req, res){
+	try {
+		var fileName = null;
+		if(!req.files.song) return res.status(206).send({message: global.st.song_upload_file_missing});
+		var fileSplit = req.files.song.path.split(path.sep);
+		var fileFullName = fileSplit[fileSplit.length - 1];
+		var fileName = fileFullName.split('\.')[0];
+		var fileExt = fileFullName.split('\.')[1];
+		var isValidExt = false;
+		
+		for(var i = 0; i < config.get('dir.file_song_ext_supported').length; i++){
+			if(config.get('dir.file_song_ext_supported')[i] == fileExt) isValidExt = true;
+		}
+		if(!isValidExt) return res.status(200).send({message: global.st.song_upload_file_ext_err});
+		var song = await Song.findByIdAndUpdate(req.params.id, {file: fileFullName});
+		if(!song) return res.status(404).send({message: global.st.song_upload_file_not_exist});
+		res.status(200).send({song: song});
+	} catch (err) {
+		res.status(500).send({message: global.st.song_upload_file_err});
+	}
+}
+
 function _isValidSong(song){
 	if(song.name != null && song.number != null && song.duration != null && song.album != null){
 		return true;
@@ -118,5 +140,6 @@ module.exports = {
 	getSongsByAlbum,
 	getSongs,
 	updateSong,
-	deleteSong
+	deleteSong,
+	uploadFileSong
 }

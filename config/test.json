@@ -12,9 +12,11 @@
 	"dir":{
 		"file_system_separator": "/",
 		"file_image_ext_supported": ["jpg","png","gif","jpeg"],
+		"file_song_ext_supported": ["mp3"],
 		"user_images": "./uploads/users/",
 		"artist_images": "./uploads/artists/",
-		"album_images": "./uploads/albums/"
+		"album_images": "./uploads/albums/",
+		"song_file": "./uploads/songs/"
 	},
 	"artist":{
 		"items_per_page": 3
@@ -43,7 +45,11 @@
 			"album_image" : "./test/res/album.jpg",
 			"album_image_name": "album.jpg",
 			"album_image_bad": "./test/res/album.bad",
-			"album_image_bad_name": "album.bad"
+			"album_image_bad_name": "album.bad",
+			"song_file" : "./test/res/song.mp3",
+			"song_file_name": "song.mp3",
+			"song_file_bad": "./test/res/song.bad",
+			"song_file_bad_name": "song.bad"
 		}
 	}
 }
