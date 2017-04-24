@@ -46,9 +46,9 @@ async function getArtists(req, res){
 
 		if(req.params.page) page = req.params.page;
 		var promise = Artist.find().sort('name');
-		var users = await promise;
-		if(!users) return res.status(404).send({message: global.st.there_is_not_artists});
-		var pagination = await Artist.paginate(users, {page: page, limit: itemsPerPage});
+		var artists = await promise;
+		if(!artists) return res.status(404).send({message: global.st.there_is_not_artists});
+		var pagination = await Artist.paginate(artists, {page: page, limit: itemsPerPage});
 		if(!pagination) return res.response(500).send({message: global.st.error_get_artists});
 		res.status(200).send({
 			total: pagination.total,
@@ -103,7 +103,7 @@ async function uploadImage(req, res){
 		var artistId = req.params.id;
 		var fileName = null;
 		if(!req.files.image) return res.status(206).send({message: global.st.upload_artist_image_not_sended});
-		var fileSplit = req.files.image.path.split(config.get('dir.file_system_separator'));
+		var fileSplit = req.files.image.path.split(path.sep);
 		var fileFullName = fileSplit[fileSplit.length - 1];
 		var fileName = fileFullName.split('\.')[0];
 		var fileExt = fileFullName.split('\.')[1];

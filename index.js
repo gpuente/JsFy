@@ -1,4 +1,19 @@
 'use strict'
+/*
+*----------------------------------------------------------------------
+* Set a default environment if not exist
+*----------------------------------------------------------------------
+*
+* Set a default environmet if any environment is set when launch
+* the Node.js app.
+*
+*/
+
+if(!process.env.NODE_ENV) process.env.NODE_ENV = 'development';
+
+
+
+
 
 /*
 *----------------------------------------------------------------------

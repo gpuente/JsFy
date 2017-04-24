@@ -66,3 +66,8 @@ uploads/users/*
 !uploads/users/.gitkeep
 uploads/artists/*
 !uploads/artists/.gitkeep
+uploads/albums/*
+!uploads/albums/.gitkeep
+uploads/songs/*
+!uploads/songs/.gitkeep
+.vscode
