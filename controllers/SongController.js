@@ -126,6 +126,13 @@ async function uploadFileSong(req, res){
 	}
 }
 
+function getFileSong(req, res){
+	var songFile = req.params.song;
+	var pathFile = config.get('dir.song_file') + songFile;
+	if(!fs.existsSync(pathFile)) return res.status(404).send({message: global.st.song_get_file_not_exist});
+	res.sendFile(path.resolve(pathFile));
+}
+
 function _isValidSong(song){
 	if(song.name != null && song.number != null && song.duration != null && song.album != null){
 		return true;
@@ -141,5 +148,6 @@ module.exports = {
 	getSongs,
 	updateSong,
 	deleteSong,
-	uploadFileSong
+	uploadFileSong,
+	getFileSong
 }

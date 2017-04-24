@@ -611,7 +611,44 @@ describe('Songs:', () => {
 
 	describe('/GET get-file-song', () => {
 		//it should not get a file song if the song not exist
+		it('it should not get a file song if the song not exist', (done) => {
+			chai.request(server)
+				.get('/api/get-file-song/' + 'filenotvalid')
+				.end((err, res) => {
+					res.should.have.status(404);
+					res.body.should.have.a('object');
+					res.body.should.have.property('message').eql(st.song_get_file_not_exist);
+					done();
+				});
+		});
+
+
 		//it should get a file song
+		it('it should get a file song', (done) => {
+			_createFakeSong().then(songData => {
+				var song = new Song(songData);
+				song.save((err, songStored) => {
+					chai.request(server)
+						.post('/api/upload-file-song/' + songStored.id)
+						.attach('song', fs.readFileSync(config.get('test.dir.song_file')), config.get('test.dir.song_file_name'))
+						.end((err, respost) => {
+							respost.should.have.status(200);
+							respost.body.should.have.a('object');
+							respost.body.should.have.property('song');
+							Song.findById(songStored.id, (err, songFound) => {
+								chai.request(server)
+									.get('/api/get-file-song/' + songFound.file)
+									.end((err, resget) => {
+										resget.should.have.status(200);
+										resget.should.have.header('content-type', /^audio/);
+										done();
+									});
+							});
+						});
+				});
+			});
+		});
+
 	});
 
 });

@@ -65,5 +65,6 @@
 	"song_upload_file_missing": "You must send a song file",
 	"song_upload_file_ext_err": "The file ext is invalid",
 	"song_upload_file_err": "An error occurred while upload file song",
-	"song_upload_file_not_exist": "The song doesn't exist"
+	"song_upload_file_not_exist": "The song doesn't exist",
+	"song_get_file_not_exist": "File not found"
 }
