@@ -9,7 +9,7 @@ var Song = require('../models/Song');
 
 async function getSong(req, res){
 	try{
-		var song = await Song.findById(req.params.id).populate({path: 'album'}).exec();
+		var song = await Song.findById(req.params.id).populate({path: 'album', populate: {path: 'artist', model: 'Artist'}}).exec();
 		if(!song) return res.status(404).send({message: global.st.song_get_not_exist});
 		res.status(200).send({song: song});
 	}catch(err){
