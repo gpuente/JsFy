@@ -1,6 +1,7 @@
 'user strict'
 
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 var Schema = mongoose.Schema;
 
 var AlbumSchema = Schema({
@@ -10,5 +11,7 @@ var AlbumSchema = Schema({
 	image: String,
 	artist: {type: Schema.ObjectId, ref: 'Artist'}
 });
+
+AlbumSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Album', AlbumSchema);
