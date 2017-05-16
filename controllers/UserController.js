@@ -50,7 +50,6 @@ async function loginUser(req, res){
 		if(params.gethash === 'true') return res.status(200).send({token: jwt.createToken(user)});
 		res.status(200).send({user: user});
 	}catch(err){
-		//console.log(err);
 		res.status(404).send({message: global.st.user_password_incorrect});
 	}
 }
